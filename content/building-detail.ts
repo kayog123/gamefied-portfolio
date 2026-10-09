@@ -21,11 +21,11 @@ export const ARCHETYPE_SUGGESTED_TECH: Record<BuildingId, string[]> = {
 
 /** Which project is each archetype's proof. */
 const ARCHETYPE_PROJECT_SLUG: Record<BuildingId, string> = {
-  auth: 'pawpay',
-  pay: 'mapbox-fare-payment-system',
-  ai: 'coda-compliance-tool',
-  shop: 'ai-customer-service-agent',
-  notif: 'automated-video-pipeline',
+  auth: 'nexus-odm',
+  pay: 'filipina-dating-app',
+  ai: 'set-dialer',
+  shop: 'livelihood-mobile-app',
+  notif: 'behold-bohol-trip',
 };
 
 function buildArchetypeProof(): Record<BuildingId, Pick<FeatureDetail, 'proof'>> {
