@@ -1,0 +1,219 @@
+@import 'tailwindcss';
+
+/*
+ * Blueprint design tokens — see docs/design-system/tokens.css (source of truth)
+ * and docs/design-system/01-foundations.md for the full rationale.
+ */
+@theme {
+  /* ---- Color: core ---- */
+  --color-navy: #0b1220;
+  --color-grid: #1e3a5f;
+  --color-wire: #3b82f6;
+  --color-glow: #60a5fa;
+  --color-live: #22c55e;
+  --color-cta: #f59e0b;
+  --color-text: #e2e8f0;
+  --color-muted: #94a3b8;
+
+  /* ---- Color: extended ---- */
+  --color-text-strong: #f1f5f9;
+  --color-text-soft: #cbd5e1;
+  --color-text-faint: #64748b;
+  --color-slate-line: #334155;
+  --color-glow-soft: #93c5fd;
+  --color-glow-pale: #bfdbfe;
+  --color-live-text: #4ade80;
+  --color-live-pale: #86efac;
+  --color-cta-hover: #fbbf24;
+  --color-danger: #f87171;
+  --color-danger-text: #fca5a5;
+  --color-input: rgb(15 25 45 / 0.85);
+  --color-image: #0f1a2e;
+
+  /* ---- Color: surfaces ---- */
+  --color-glass: rgb(11 18 32 / 0.74);
+  --color-glass-strong: rgb(11 18 32 / 0.86);
+  --color-glass-modal: rgb(11 18 32 / 0.92);
+  --color-scrim: rgb(5 9 18 / 0.62);
+
+  /* ---- Typography ---- */
+  --font-display: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, monospace;
+
+  --tracking-display: -0.035em;
+  --tracking-label: 0.08em;
+  --tracking-eyebrow: 0.14em;
+
+  /* ---- Radius ---- */
+  --radius-tag: 3px;
+  --radius-control: 4px;
+  --radius-panel: 6px;
+  --radius-modal: 8px;
+  --radius-sheet: 16px;
+
+  /* ---- Shadow / glow ---- */
+  --shadow-focus-ring: 0 0 0 4px rgb(96 165 250 / 0.2);
+  --shadow-glow-input: 0 0 0 4px rgb(96 165 250 / 0.2), 0 0 60px rgb(59 130 246 / 0.22);
+  --shadow-glow-blue: 0 0 18px rgb(59 130 246 / 0.35);
+  --shadow-glow-cta: 0 0 24px rgb(245 158 11 / 0.45);
+  --shadow-glow-live: 0 0 8px rgb(34 197 94 / 0.7);
+  --shadow-panel-dock: -30px 0 60px rgb(0 0 0 / 0.35);
+  --shadow-modal: 0 30px 80px rgb(0 0 0 / 0.5), 0 0 60px rgb(59 130 246 / 0.15);
+
+  /* ---- Motion ---- */
+  --ease-blueprint: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-shake: shake 150ms ease-in-out;
+  --animate-shard-pop: shard-pop 400ms var(--ease-blueprint);
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-4px);
+    }
+    75% {
+      transform: translateX(4px);
+    }
+  }
+  @keyframes shard-pop {
+    0% {
+      transform: scale(0.6);
+    }
+    60% {
+      transform: scale(1.08);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
+/* One-off glow pulse — Spark's idea input on load (docs/design-system/05-motion…). */
+@utility animate-input-pulse {
+  animation: input-pulse 900ms var(--ease-blueprint) 1;
+}
+@keyframes input-pulse {
+  0% {
+    box-shadow: var(--shadow-glow-input);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgb(96 165 250 / 0.3), 0 0 80px rgb(59 130 246 / 0.3);
+  }
+  100% {
+    box-shadow: var(--shadow-glow-input);
+  }
+}
+
+/* Blinking caret / cursor, e.g. the generation log's active line. */
+@utility animate-caret-blink {
+  animation: caret-blink 1s step-end infinite;
+}
+@keyframes caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Blueprint drafting-sheet background (game screens, Sheets 01–06). */
+@utility bg-blueprint {
+  background-color: var(--color-navy);
+  background-image:
+    linear-gradient(rgb(30 58 95 / 0.6) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(30 58 95 / 0.6) 1px, transparent 1px),
+    linear-gradient(rgb(30 58 95 / 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(30 58 95 / 0.28) 1px, transparent 1px);
+  background-size:
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
+  @variant md {
+    background-size:
+      160px 160px,
+      160px 160px,
+      32px 32px,
+      32px 32px;
+  }
+}
+
+/* Single-level grid (content pages 07–08, component sheet). */
+@utility bg-blueprint-flat {
+  background-color: var(--color-navy);
+  background-image:
+    linear-gradient(rgb(30 58 95 / 0.45) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(30 58 95 / 0.45) 1px, transparent 1px);
+  background-size: 24px 24px;
+  @variant md {
+    background-size: 32px 32px;
+  }
+}
+
+/* Glass panel with two-corner ticks (top-left + bottom-right). Default blue tone. */
+@utility panel-ticks {
+  border: 1px solid rgb(59 130 246 / 0.3);
+  border-radius: var(--radius-panel);
+  backdrop-filter: blur(14px);
+  background:
+    linear-gradient(var(--color-glow), var(--color-glow)) 0 0 / 10px 1px no-repeat,
+    linear-gradient(var(--color-glow), var(--color-glow)) 0 0 / 1px 10px no-repeat,
+    linear-gradient(var(--color-glow), var(--color-glow)) 100% 100% / 10px 1px no-repeat,
+    linear-gradient(var(--color-glow), var(--color-glow)) 100% 100% / 1px 10px no-repeat,
+    var(--color-glass);
+}
+
+/* Shared focus style used across the kit. */
+@utility focus-blueprint {
+  &:focus-visible {
+    outline: 2px solid var(--color-glow);
+    outline-offset: 3px;
+  }
+}
+
+/*
+ * "Download brief (PDF)" (Sheet 06) uses the browser's print dialog rather
+ * than a PDF library (see docs/PACKAGES.md#open-decisions): isolate
+ * `#brief-print-area` and let the visitor save it as a PDF.
+ */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #brief-print-area,
+  #brief-print-area * {
+    visibility: visible;
+  }
+  #brief-print-area {
+    position: absolute;
+    inset: 0;
+    background: white;
+    color: black;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-grid);
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--color-navy);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-glow);
+    outline-offset: 3px;
+  }
+}
