@@ -10,12 +10,12 @@ export type { CaseStudy, ArchitectureStep, Decision, ResultMetric } from './case
 
 /** All 6 case studies (Sheet 08), keyed by slug — one per `content/projects.ts` entry. */
 export const CASE_STUDIES = {
-  'ai-customer-service-agent': aiCustomerServiceAgent,
-  'coda-compliance-tool': codaComplianceTool,
-  'mapbox-fare-payment-system': mapboxFarePaymentSystem,
-  pawpay,
-  'automated-video-pipeline': automatedVideoPipeline,
-  'browser-automation-agent': browserAutomationAgent,
+  'set-dialer': aiCustomerServiceAgent,
+  'nexus-odm': codaComplianceTool,
+  'filipina-dating-app': pawpay,
+  'livelihood-mobile-app': automatedVideoPipeline,
+  'behold-bohol-trip': mapboxFarePaymentSystem,
+  'love-bohol-portal': browserAutomationAgent,
 };
 
 export function getCaseStudy(slug: string) {

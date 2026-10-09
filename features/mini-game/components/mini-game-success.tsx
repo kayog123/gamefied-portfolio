@@ -5,7 +5,7 @@ import { WIRE_NODES } from '../mini-game.constants';
 
 export type MiniGameSuccessProps = {
   buildingName: string;
-  /** `null` means the timer ran out — "Jovanni finished it for you" instead. */
+  /** `null` means the timer ran out — "Jovanni Jungco finished it for you" instead. */
   wiredSeconds: number | null;
   shardName: string;
   nextBuildingName?: string;
@@ -38,7 +38,7 @@ export function MiniGameSuccess({ buildingName, wiredSeconds, shardName, nextBui
         </div>
         <p className="mt-1.5 font-sans text-sm text-muted">
           {wiredSeconds === null
-            ? `${buildingName} is live. Jovanni finished it for you.`
+            ? `${buildingName} is live. Jovanni Jungco finished it for you.`
             : `${buildingName} is live. Wired in ${wiredSeconds.toFixed(1)}s.`}
         </p>
         <div

@@ -27,8 +27,8 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Jovanni — Full-stack & AI Engineer · Your idea → Live product',
-    template: '%s · Jovanni — Full-stack & AI Engineer',
+    default: 'Jovanni Jungco — Full-stack & AI Engineer · Your idea → Live product',
+    template: '%s · Jovanni Jungco — Full-stack & AI Engineer',
   },
   description:
     'I build products end to end: web and mobile apps, AI agents, payments, maps and automation. Type your idea and watch it become a blueprint.',

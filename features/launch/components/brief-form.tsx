@@ -39,7 +39,7 @@ export function BriefForm({ form, onPrint, layout = 'desktop' }: BriefFormProps)
       {layout === 'mobile' && (
         <label className="flex items-start gap-2.5 font-sans text-xs leading-[1.4] text-muted">
           <ConsentBox checked={consent} onChange={setConsent} />
-          Share this brief and my email with Jovanni.
+          Share this brief and my email with Jovanni Jungco.
         </label>
       )}
       <Button
@@ -48,7 +48,7 @@ export function BriefForm({ form, onPrint, layout = 'desktop' }: BriefFormProps)
         className={layout === 'desktop' ? 'px-4' : 'h-[50px] justify-center'}
         iconRight={layout === 'desktop' ? <Send className="size-[15px]" aria-hidden /> : undefined}
       >
-        {state === 'sent' ? 'Sent ✓' : 'Send brief to Jovanni'}
+        {state === 'sent' ? 'Sent ✓' : 'Send brief to Jovanni Jungco'}
       </Button>
     </div>
   );
@@ -61,7 +61,7 @@ export function BriefForm({ form, onPrint, layout = 'desktop' }: BriefFormProps)
           {emailRow}
           <label className="flex items-start gap-2.5 font-sans text-xs leading-[1.45] text-muted">
             <ConsentBox checked={consent} onChange={setConsent} />
-            I agree to share this brief and my email with Jovanni so he can reply. No newsletters.
+            I agree to share this brief and my email with Jovanni Jungco so he can reply. No newsletters.
           </label>
         </>
       ) : (

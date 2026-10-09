@@ -54,7 +54,7 @@ export function SparkScreen() {
 
       <GameTopBar context="BLUEPRINT" />
 
-      <div className="relative flex min-h-0 flex-1 flex-col items-center overflow-y-auto px-5 pb-10 pt-10 md:px-0 md:pt-[90px]">
+      <div className="relative flex min-h-0 flex-1 flex-col items-center overflow-y-auto px-5 pb-10 pt-10 md:overflow-y-hidden md:px-0 md:pb-0 md:pt-[90px]">
         <div className="flex w-full max-w-[880px] flex-col items-start gap-0 md:items-center md:text-center">
           <div className="hidden md:flex">
             <EyebrowRule>SHEET 01 — SPARK</EyebrowRule>
@@ -72,7 +72,7 @@ export function SparkScreen() {
             onSubmit={handleSubmit}
             disabled={isTyping}
             autoFocus={isDesktop}
-            className="mt-7 md:mt-12"
+            className="mt-7 md:mt-8"
           />
 
           <div className="mt-7 font-mono text-[11px] tracking-eyebrow text-muted md:mt-9">
@@ -86,7 +86,7 @@ export function SparkScreen() {
         <TitleBlock
           cells={[
             { k: 'PROJECT', v: 'UNTITLED' },
-            { k: 'DRAWN BY', v: 'JOVANNI' },
+            { k: 'DRAWN BY', v: 'JOVANNI JUNGCO' },
             { k: 'SCALE', v: '1 : 1' },
             { k: 'SHEET', v: '01 / 06' },
           ]}

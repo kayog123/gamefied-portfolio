@@ -8,7 +8,7 @@ const requestSchema = z.object({
 });
 
 /**
- * POST /api/brief — "Send brief to Jovanni" (Sheet 06).
+ * POST /api/brief — "Send brief to Jovanni Jungco" (Sheet 06).
  *
  * TODO(docs/PACKAGES.md#open-decisions): wire a real email provider (Resend
  * is the current leaning) once chosen. Until then this validates and

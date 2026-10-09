@@ -6,7 +6,7 @@ export function Hero() {
     <section className="grid grid-cols-1 items-end gap-10 border-b border-grid px-5 pb-10 pt-12 md:grid-cols-[1fr_400px] md:gap-16 md:px-12 md:pb-[88px] md:pt-24">
       <div>
         <div className="font-mono text-[11px] tracking-eyebrow text-glow md:text-xs">
-          JOVANNI — FULL-STACK &amp; AI ENGINEER
+          JOVANNI JUNGCO — FULL-STACK &amp; AI ENGINEER
         </div>
         <h1 className="mt-3.5 text-balance font-display text-5xl font-semibold leading-[1] tracking-display text-text-strong md:mt-[22px] md:text-[96px] md:leading-[0.98] md:tracking-[-0.04em]">
           Your idea →

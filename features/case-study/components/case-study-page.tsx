@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { SiteTopBar } from '@/components/layout/site-top-bar';
 import type { CaseStudy } from '@/content/case-studies';
@@ -38,12 +39,18 @@ export function CaseStudyPage({ project, caseStudy }: CaseStudyPageProps) {
       </div>
 
       <div className="px-5 pb-12 md:px-40 md:pb-[72px]">
-        <div
-          className="grid h-[220px] place-items-center rounded-control border border-glow/40 bg-image font-mono text-xs text-muted md:h-[480px]"
-          style={{ backgroundImage: 'repeating-linear-gradient(135deg, rgb(59 130 246 / 0.07) 0 10px, transparent 10px 20px)' }}
-        >
-          product screenshot — {project.shot.replace('screenshot — ', '')}
-        </div>
+        {project.image ? (
+          <div className="relative h-[220px] overflow-hidden rounded-control border border-glow/40 md:h-[480px]">
+            <Image src={project.image} alt={project.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 1160px" priority />
+          </div>
+        ) : (
+          <div
+            className="grid h-[220px] place-items-center rounded-control border border-glow/40 bg-image font-mono text-xs text-muted md:h-[480px]"
+            style={{ backgroundImage: 'repeating-linear-gradient(135deg, rgb(59 130 246 / 0.07) 0 10px, transparent 10px 20px)' }}
+          >
+            product screenshot — {project.shot.replace('screenshot — ', '')}
+          </div>
+        )}
       </div>
 
       <SectionRow label="01 — PROBLEM">
