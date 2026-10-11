@@ -107,6 +107,7 @@ Rules:
 - Mono text is **always uppercase** when it's a label. Tech names in tags and shards keep their own casing ("pgvector", "Next.js").
 - Units and percent signs in big stats drop to about 40% size and take the glow color: `68<span>%</span>`.
 - Use `text-wrap: pretty` on paragraphs and `text-wrap: balance` on multi-line headlines.
+- **`</kayog>` brand assets** live in `public/brand/` (`kayog-logo.svg` wordmark with dimension line, `kayog-mark.svg` square icon). They are self-contained animated SVGs with glyphs outlined as paths (no fonts needed; open them in Figma or any design tool). Colors: `#60A5FA` tag, `#BFDBFE` slash, `#F1F5F9` name, `#3B82F6` rule. Animation: tag draws in, letters rise, rule grows, then a light pulse loops along it; it stops under `prefers-reduced-motion`. Use `KayogLogo` / `KayogMark` from `components/layout/kayog-logo.tsx`. The top bar uses `KayogMark` in place of the diamond, next to the name wordmark below. Favicons are simplified static versions (no grid, thicker strokes) in `app/icon.svg`, `app/favicon.ico` and `app/apple-icon.png`.
 - The logo wordmark is "JOVANNI" in Space Grotesk 600, 14–15px, tracking .06em. It follows a 9px diamond outline (1.5px `#60A5FA` border, rotated 45°).
 
 ## Spacing

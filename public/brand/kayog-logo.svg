@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 116" width="384" height="116" role="img" aria-labelledby="t">
+  <title id="t">kayog</title>
+  <style>
+    .draw{stroke-dasharray:1;stroke-dashoffset:0;animation:draw .55s cubic-bezier(.2,.8,.2,1) var(--d,0s) backwards}
+    @keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+    .l{transform-box:fill-box;transform-origin:50% 100%;animation:rise .5s cubic-bezier(.2,.8,.2,1) calc(.35s + var(--i)*.09s) backwards}
+    @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    .rule{transform-box:fill-box;transform-origin:0 50%;animation:grow .7s cubic-bezier(.2,.8,.2,1) 1.05s backwards}
+    @keyframes grow{from{transform:scaleX(0)}to{transform:none}}
+    .tick{animation:fade .3s ease-out 1.05s backwards}
+    @keyframes fade{from{opacity:0}to{opacity:1}}
+    .pulse{animation:run 5s cubic-bezier(.4,0,.2,1) 2.4s infinite;opacity:0}
+    @keyframes run{0%{opacity:0;transform:translateX(0)}6%{opacity:1}42%{opacity:1}50%,100%{opacity:0;transform:translateX(344px)}}
+    .glint{animation:glint 5s ease-in-out 2.4s infinite}
+    @keyframes glint{0%,100%{opacity:1}12%{opacity:.55}24%{opacity:1}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}.pulse{display:none}}
+  </style>
+  <defs>
+    <linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#60A5FA" stop-opacity="0"/><stop offset=".75" stop-color="#60A5FA"/><stop offset="1" stop-color="#BFDBFE"/></linearGradient>
+  </defs>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="8">
+    <path class="draw" pathLength="1" style="--d:0s" stroke="#60A5FA" d="M26 18 6 45l20 27"/>
+    <path class="draw glint" pathLength="1" style="--d:.15s" stroke="#BFDBFE" d="M54 8 40 82"/>
+    <path class="draw" pathLength="1" style="--d:.95s" stroke="#60A5FA" d="m358 18 20 27-20 27"/>
+  </g>
+  <g transform="translate(60 80)" fill="#F1F5F9">
+    <path class="l" style="--i:0" d="M18.80 0L7.30 0L7.30-70L18.80-70L18.80-30.70L20.50-30.70L38.30-49.40L53.40-49.40L29.50-25.50L54.20 0L39.30 0L20.50-20.10L18.80-20.10"/>
+    <path class="l" style="--i:1" d="M75.40 1.40Q70.20 1.40 66-0.45Q61.80-2.30 59.35-5.80Q56.90-9.30 56.90-14.40Q56.90-19.40 59.35-22.80Q61.80-26.20 66.10-27.95Q70.40-29.70 75.90-29.70L90.20-29.70L90.20-32.70Q90.20-36.60 87.80-39.05Q85.40-41.50 80.30-41.50Q75.30-41.50 72.75-39.15Q70.20-36.80 69.40-33.10L58.80-36.60Q60-40.50 62.65-43.70Q65.30-46.90 69.70-48.85Q74.10-50.80 80.50-50.80Q90.20-50.80 95.75-45.95Q101.30-41.10 101.30-31.90L101.30-12.50Q101.30-9.50 104.10-9.50L108.30-9.50L108.30 0L100.20 0Q96.60 0 94.30-1.80Q92-3.60 92-6.70L92-6.90L90.30-6.90Q89.70-5.50 88.20-3.50Q86.70-1.50 83.65-0.05Q80.60 1.40 75.40 1.40M77.30-8Q83-8 86.60-11.25Q90.20-14.50 90.20-20L90.20-21L76.60-21Q72.90-21 70.60-19.40Q68.30-17.80 68.30-14.70Q68.30-11.70 70.70-9.85Q73.10-8 77.30-8"/>
+    <path class="l" style="--i:2" d="M151.30 20L120.30 20L120.30 10L147.60 10Q150.40 10 150.40 7L150.40-6.80L148.70-6.80Q147.90-5 146.10-3.25Q144.30-1.50 141.30-0.35Q138.30 0.80 133.70 0.80Q128 0.80 123.60-1.75Q119.20-4.30 116.80-8.95Q114.40-13.60 114.40-19.80L114.40-49.40L125.80-49.40L125.80-20.70Q125.80-14.70 128.75-11.80Q131.70-8.90 137.10-8.90Q143.20-8.90 146.75-12.90Q150.30-16.90 150.30-24.40L150.30-49.40L161.70-49.40L161.70 9.40Q161.70 14.30 158.90 17.15Q156.10 20 151.30 20"/>
+    <path class="l" style="--i:3" d="M196.70 1.40Q189.30 1.40 183.45-1.65Q177.60-4.70 174.25-10.35Q170.90-16 170.90-23.90L170.90-25.50Q170.90-33.40 174.25-39.10Q177.60-44.80 183.45-47.80Q189.30-50.80 196.70-50.80Q204.10-50.80 209.90-47.80Q215.70-44.80 219.05-39.10Q222.40-33.40 222.40-25.50L222.40-23.90Q222.40-16 219.05-10.35Q215.70-4.70 209.90-1.65Q204.10 1.40 196.70 1.40M196.70-8.80Q203-8.80 207-12.85Q211-16.90 211-24.20L211-25.20Q211-32.50 207-36.55Q203-40.60 196.70-40.60Q190.40-40.60 186.40-36.55Q182.40-32.50 182.40-25.20L182.40-24.20Q182.40-16.90 186.40-12.85Q190.40-8.80 196.70-8.80"/>
+    <path class="l" style="--i:4" d="M229.20-24.50L229.20-26Q229.20-33.80 232.30-39.35Q235.40-44.90 240.60-47.85Q245.80-50.80 252-50.80Q259-50.80 262.65-48.30Q266.30-45.80 268-42.90L269.70-42.90L269.70-49.40L280.90-49.40L280.90 9.40Q280.90 14.30 278.10 17.15Q275.30 20 270.50 20L237.30 20L237.30 10L266.60 10Q269.50 10 269.50 7L269.50-7.30L267.80-7.30Q266.70-5.60 264.80-3.85Q262.90-2.10 259.80-0.90Q256.70 0.30 252 0.30Q245.80 0.30 240.60-2.65Q235.40-5.60 232.30-11.15Q229.20-16.70 229.20-24.50M255.20-9.80Q261.40-9.80 265.50-13.75Q269.60-17.70 269.60-24.80L269.60-25.80Q269.60-33 265.55-36.90Q261.50-40.80 255.20-40.80Q249-40.80 244.85-36.90Q240.70-33 240.70-25.80L240.70-24.80Q240.70-17.70 244.85-13.75Q249-9.80 255.20-9.80"/>
+  </g>
+  <g stroke="#3B82F6" fill="none" stroke-width="1">
+    <path class="tick" d="M4.5 101v10M379.5 101v10"/>
+    <path class="rule" stroke-opacity=".55" d="M4 106h376"/>
+  </g>
+  <rect class="pulse" x="4" y="105" width="40" height="2" rx="1" fill="url(#g)"/>
+</svg>

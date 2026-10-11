@@ -40,7 +40,7 @@ All of this uses **built-in Next.js 16 metadata APIs**, so no SEO package is nee
 | Sitemap | Generated from `content/` (home, `/work`, every case study) with `lastModified` | `app/sitemap.ts` |
 | Robots | Allow all, disallow `/api/` and `/components`, point to sitemap | `app/robots.ts` |
 | Open Graph / X cards | Blueprint-styled images generated per page (navy grid, mono eyebrow, Space Grotesk title) | `app/opengraph-image.tsx`, `app/(site)/work/[slug]/opengraph-image.tsx` |
-| Icons / manifest | Diamond logo mark | `app/icon.svg`, `app/apple-icon.png`, `app/manifest.ts` |
+| Icons / manifest | `</>` kayog mark (`app/icon.svg`, `app/favicon.ico`, `app/apple-icon.png` built) | `app/icon.svg`, `app/apple-icon.png`, `app/manifest.ts` |
 | 404 | Helpful `not-found.tsx` that links to `/work` and case studies | `app/not-found.tsx` |
 | Language | `<html lang="en">` | `app/layout.tsx` |
 

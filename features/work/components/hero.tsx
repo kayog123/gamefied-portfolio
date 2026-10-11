@@ -1,4 +1,6 @@
+import Image from 'next/image';
 import { Button, DimensionLine } from '@/components/blueprint';
+import { KayogLogo } from '@/components/layout/kayog-logo';
 import { TypeOnView } from '@/components/type-on-view';
 
 /** Sheet 07 hero: eyebrow, headline, lead, CTAs, portrait frame (desktop only). */
@@ -27,12 +29,19 @@ export function Hero() {
       </div>
 
       <div className="relative hidden md:block">
+        <div aria-hidden className="absolute bottom-0 right-full mr-8 hidden h-[460px] w-[127px] xl:block">
+          <KayogLogo className="absolute left-1/2 top-1/2 h-auto w-[420px] max-w-none -translate-x-1/2 -translate-y-1/2 -rotate-90" />
+        </div>
         <DimensionLine label="400" className="mb-2" />
-        <div
-          className="grid h-[460px] place-items-center rounded-panel border border-glow/45 font-mono text-xs text-muted"
-          style={{ background: 'repeating-linear-gradient(135deg, rgb(59 130 246 / 0.08) 0 10px, transparent 10px 20px), rgba(15,25,45,.8)' }}
-        >
-          portrait photo
+        <div className="relative h-[460px] overflow-hidden rounded-panel border border-glow/45 bg-image">
+          <Image
+            src="/portrait.jpg"
+            alt="Portrait of Jovanni Jungco"
+            fill
+            priority
+            sizes="400px"
+            className="object-cover"
+          />
         </div>
       </div>
     </section>

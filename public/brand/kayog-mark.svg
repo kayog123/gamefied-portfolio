@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="t">
+  <title id="t">kayog</title>
+  <style>
+    .draw{stroke-dasharray:1;stroke-dashoffset:0;animation:draw .55s cubic-bezier(.2,.8,.2,1) var(--d,0s) backwards}
+    @keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+    .l{transform-box:fill-box;transform-origin:50% 100%;animation:rise .5s cubic-bezier(.2,.8,.2,1) calc(.35s + var(--i)*.09s) backwards}
+    @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    .rule{transform-box:fill-box;transform-origin:0 50%;animation:grow .7s cubic-bezier(.2,.8,.2,1) 1.05s backwards}
+    @keyframes grow{from{transform:scaleX(0)}to{transform:none}}
+    .tick{animation:fade .3s ease-out 1.05s backwards}
+    @keyframes fade{from{opacity:0}to{opacity:1}}
+    .tile{animation:fade .4s ease-out backwards}
+    .pulse{animation:run 4.5s cubic-bezier(.4,0,.2,1) 1.6s infinite;opacity:0}
+    @keyframes run{0%{opacity:0;transform:translateX(0)}8%{opacity:1}44%{opacity:1}52%,100%{opacity:0;transform:translateX(66px)}}
+    .glint{animation:glint 4.5s ease-in-out 1.6s infinite}
+    @keyframes glint{0%,100%{opacity:1}14%{opacity:.5}28%{opacity:1}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}.pulse{display:none}}
+  </style>
+  <defs>
+    <clipPath id="c"><rect x="1" y="1" width="62" height="62" rx="11"/></clipPath>
+    <linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#60A5FA" stop-opacity="0"/><stop offset=".75" stop-color="#60A5FA"/><stop offset="1" stop-color="#BFDBFE"/></linearGradient>
+  </defs>
+  <g class="tile">
+    <rect x="1" y="1" width="62" height="62" rx="11" fill="#0B1220" stroke="#3B82F6" stroke-opacity=".5" stroke-width="2"/>
+    <g clip-path="url(#c)" stroke="#1E3A5F" stroke-width="1" fill="none"><path d="M16 0v64M32 0v64M48 0v64M0 16h64M0 32h64M0 48h64"/></g>
+  </g>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5">
+    <path class="draw" pathLength="1" style="--d:.2s" stroke="#60A5FA" d="M23 21 11 32l12 11"/>
+    <path class="draw glint" pathLength="1" style="--d:.35s" stroke="#BFDBFE" d="M36 16 28 48"/>
+    <path class="draw" pathLength="1" style="--d:.5s" stroke="#60A5FA" d="m41 21 12 11-12 11"/>
+  </g>
+  <g clip-path="url(#c)"><rect class="pulse" x="-14" y="47" width="14" height="2" rx="1" fill="url(#g)"/></g>
+</svg>

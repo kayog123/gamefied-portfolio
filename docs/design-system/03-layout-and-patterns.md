@@ -45,7 +45,7 @@ The content pages (07–08) are **normal scrolling documents** on the single-lev
 | Fill | `rgba(11,18,32,.6)` + blur 10 | `rgba(11,18,32,.7)` |
 | Border | bottom 1px `#1E3A5F` | same |
 
-**Left:** the logo (diamond + JOVANNI), followed on desktop by a muted mono context (`/ BLUEPRINT`, or `/ CREATORBID` once a project exists).
+**Left:** the logo (animated `</>` mark + JOVANNI JUNGCO), followed on desktop by a muted mono context (`/ BLUEPRINT`, or `/ CREATORBID` once a project exists).
 
 **Center (HUD screens):** a 420px segmented progress block. The grid is `1fr auto 1fr`.
 
