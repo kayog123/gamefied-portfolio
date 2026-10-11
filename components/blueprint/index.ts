@@ -7,6 +7,7 @@ export { SkillShard, type SkillShardProps, type SkillShardState } from './skill-
 export { Panel, type PanelProps } from './panel';
 export { DimensionLine, type DimensionLineProps } from './dimension-line';
 export { TitleBlock, type TitleBlockProps } from './title-block';
+export { CoordinateReadout, type CoordinateReadoutProps } from './coordinate-readout';
 export { ProofCard, type ProofCardProps } from './proof-card';
 export { TimerRing, type TimerRingProps } from './timer-ring';
 export { GameModal, type GameModalProps } from './game-modal';

@@ -107,6 +107,46 @@
   }
 }
 
+/*
+ * <TypeOnView> ships its full text in the server HTML. When JS is available and motion is
+ * allowed, hide it until hydration so it can type in instead of flashing in full first.
+ */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-type-pending] {
+    visibility: hidden;
+  }
+}
+
+/*
+ * <RevealOnView>: rows fade up, `.reveal-pop` markers pop in and `.reveal-line` connectors
+ * draw downward. Only applied when JS is available and motion is allowed, so the page is
+ * complete without either.
+ */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    transition:
+      opacity 500ms var(--ease-blueprint) var(--reveal-delay, 0ms),
+      transform 500ms var(--ease-blueprint) var(--reveal-delay, 0ms);
+  }
+  [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  [data-reveal] .reveal-pop {
+    transition: scale 400ms var(--ease-blueprint) calc(var(--reveal-delay, 0ms) + 150ms);
+  }
+  [data-reveal]:not([data-revealed]) .reveal-pop {
+    scale: 0.3;
+  }
+  [data-reveal] .reveal-line {
+    transform-origin: top;
+    transition: transform 700ms var(--ease-blueprint) calc(var(--reveal-delay, 0ms) + 250ms);
+  }
+  [data-reveal]:not([data-revealed]) .reveal-line {
+    transform: scaleY(0);
+  }
+}
+
 /* Blinking caret / cursor, e.g. the generation log's active line. */
 @utility animate-caret-blink {
   animation: caret-blink 1s step-end infinite;
@@ -141,6 +181,71 @@
       32px 32px,
       32px 32px;
   }
+}
+
+/*
+ * Light pulses that run along the bg-blueprint grid lines (components/layout/grid-pulses.tsx).
+ * `--cell` is the minor grid pitch (24px mobile / 32px md); `--line` is the grid-line index,
+ * so a pulse sits exactly on a line. Transform + opacity only. A pulse travels for the first
+ * 60% of its cycle and rests for the rest, like a beat.
+ */
+@keyframes pulse-run-x {
+  0% {
+    opacity: 0;
+    transform: translateX(calc(var(--len) * -1));
+  }
+  6% {
+    opacity: 1;
+  }
+  54% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    opacity: 0;
+    transform: translateX(100vw);
+  }
+}
+@keyframes pulse-run-y {
+  0% {
+    opacity: 0;
+    transform: translateY(calc(var(--len) * -1));
+  }
+  6% {
+    opacity: 1;
+  }
+  54% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    opacity: 0;
+    transform: translateY(100dvh);
+  }
+}
+@utility grid-pulse-x {
+  position: absolute;
+  left: 0;
+  top: calc(var(--cell) * var(--line) - 0.5px);
+  width: var(--len);
+  height: 2px;
+  border-radius: 2px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgb(96 165 250 / 0.85) 80%, var(--color-glow-pale));
+  box-shadow: 0 0 10px 1px rgb(59 130 246 / 0.55);
+  animation: pulse-run-x var(--dur) linear var(--delay) infinite;
+}
+@utility grid-pulse-y {
+  position: absolute;
+  top: 0;
+  left: calc(var(--cell) * var(--line) - 0.5px);
+  width: 2px;
+  height: var(--len);
+  border-radius: 2px;
+  opacity: 0;
+  background: linear-gradient(180deg, transparent, rgb(96 165 250 / 0.85) 80%, var(--color-glow-pale));
+  box-shadow: 0 0 10px 1px rgb(59 130 246 / 0.55);
+  animation: pulse-run-y var(--dur) linear var(--delay) infinite;
 }
 
 /* Single-level grid (content pages 07–08, component sheet). */

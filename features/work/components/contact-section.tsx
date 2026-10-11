@@ -2,6 +2,7 @@
 
 import { Calendar, Send } from 'lucide-react';
 import { Button } from '@/components/blueprint';
+import { TypeOnView } from '@/components/type-on-view';
 import { BOOK_A_CALL_URL, SOCIAL_LINKS } from '@/lib/site';
 import { useContactForm } from '../hooks/use-contact-form';
 
@@ -29,9 +30,7 @@ export function ContactSection() {
       <div>
         <div className="font-mono text-xs tracking-eyebrow text-cta">CONTACT</div>
         <h2 className="mt-3 text-balance font-display text-3xl font-semibold leading-[1.1] tracking-[-0.02em] text-text-strong md:mt-4 md:text-[56px] md:leading-[1.02]">
-          Have an idea?
-          <br />
-          Let&apos;s build it for real.
+          <TypeOnView text={"Have an idea?\nLet's build it for real."} />
         </h2>
       </div>
 

@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import { CityScene } from '@/features/city';
-import { TitleBlock } from '@/components/blueprint';
+import { CoordinateReadout, TitleBlock } from '@/components/blueprint';
 import { GameTopBar } from '@/components/layout/top-bar';
 import { useGame } from '@/features/game';
 import { useIsDesktop } from '@/hooks/use-media-query';
 import type { Preset } from '@/content/presets';
 import { IdeaInput } from './idea-input';
 import { PresetChips } from './preset-chips';
+import { TypedHeadline } from './typed-headline';
 import { useTypewriter } from '../hooks/use-typewriter';
 
 function EyebrowRule({ children }: { children: string }) {
@@ -59,9 +60,10 @@ export function SparkScreen() {
           <div className="hidden md:flex">
             <EyebrowRule>SHEET 01 — SPARK</EyebrowRule>
           </div>
-          <h1 className="mt-3.5 text-balance font-display text-[42px] font-semibold leading-[1.04] tracking-display text-text-strong md:mt-[22px] md:text-[56px] md:leading-[1.03] lg:whitespace-nowrap min-[1440px]:text-[78px] min-[1440px]:leading-[1.02]">
-            What do you want to build?
-          </h1>
+          <TypedHeadline
+            paused={idea.length > 0}
+            className="mt-3.5 text-balance font-display text-[42px] font-semibold leading-[1.04] tracking-display text-text-strong md:mt-[22px] md:text-[56px] md:leading-[1.03] lg:whitespace-nowrap min-[1440px]:text-[78px] min-[1440px]:leading-[1.02]"
+          />
           <p className="mt-3 font-sans text-base text-muted md:mt-[18px] md:text-[19px]">
             Tell me your idea. Watch me build it.
           </p>
@@ -91,9 +93,7 @@ export function SparkScreen() {
             { k: 'SHEET', v: '01 / 06' },
           ]}
         />
-        <span aria-hidden className="font-mono text-[10px] tracking-label text-muted">
-          X 0720 · Y 0450 · GRID 32
-        </span>
+        <CoordinateReadout />
       </div>
       <div className="relative shrink-0 px-5 pb-5 font-mono text-[10px] tracking-label text-muted md:hidden">
         SHEET 01 / 06 · SCALE 1:1

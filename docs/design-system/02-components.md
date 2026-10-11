@@ -184,7 +184,7 @@ These are blueprint decorations. Mark them `aria-hidden`.
 - **Dimension line:** 1px × 9 end ticks in `#3B82F6`, a flex-1 1px line in `rgba(59,130,246,.55)`, and a mono 10 tracking .1em `#60A5FA` label in the middle (`880 PX · 500 CHAR MAX`). It can run vertically with `writing-mode: vertical-rl` (`H 210 · AUTH TOWER`).
 - **Eyebrow rule:** 28px × 1 `#3B82F6` lines on both sides of a centered eyebrow (`SHEET 01 — SPARK`).
 - **Title block:** a grid of cells with a 1px `rgba(59,130,246,.4)` outer border and `.3` cell dividers, on bg `rgba(11,18,32,.7)`. Each cell has padding 8×14, a mono 10 muted key over an 11px `#E2E8F0` value. The fields are PROJECT, DRAWN BY, SCALE, SHEET (or REV).
-- **Coordinates readout:** mono 10 tracking .1em muted (`X 0720 · Y 0450 · GRID 32`).
+- **Coordinates readout:** mono 10 tracking .1em muted (`X 0720 · Y 0450 · GRID 32`). Live: X/Y follow the pointer in viewport px (zero-padded to 4 digits; `0720 / 0450` until the first move). `CoordinateReadout` in `components/blueprint/`.
 - **Focus callout:** mono 10 `#60A5FA` `← FOCUS` placed outside the focused element.
 - **Figure caption:** mono 10 muted, bottom-right of a diagram (`FIG. 01 · SIMPLIFIED`).
 

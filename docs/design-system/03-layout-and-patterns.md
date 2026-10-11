@@ -32,6 +32,8 @@ z-60 modal + scrim
 
 The shell itself is `position: fixed; inset: 0` and is the only scroll container (`overflow-y: auto`), so the document never scrolls. Screens 02–06 fill it exactly (`h-full`, `overflow: hidden`). **Sheet 01 (Spark) is the exception:** it is `min-h-full` and grows with its content, so on viewports shorter than the content (for example 1920 × 1080 at 150% OS scaling, about 1280 × 640 CSS px) the visitor scrolls the shell to reach the preset chips instead of having them clipped. Its top bar is sticky.
 
+Content pages (07–08) show a floating 44px "Back to top" button (`ScrollToTop`, bottom-right) after 600px of scroll; it smooth-scrolls, or jumps under reduced motion.
+
 The content pages (07–08) are **normal scrolling documents** on the single-level grid. They have no 3D scene, so they load as static HTML for recruiters and crawlers.
 
 ## Top bar

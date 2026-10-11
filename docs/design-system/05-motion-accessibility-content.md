@@ -19,13 +19,14 @@
 
 | Screen | Motion |
 |--------|--------|
-| 01 Spark | The grid fades in. The faint wireframe city slowly orbits behind the vignette. The input border pulses once on load. A preset tap typewriters its text into the input, then submits. |
+| All game screens (01–06) | Ambient light pulses run along the blueprint grid lines like blood through veins (`components/layout/grid-pulses.tsx`): a bright head with a fading tail, one cycle of travel then a rest. Behind everything, pointer-transparent, hidden under reduced motion. |
+| 01 Spark | The grid fades in. The faint wireframe city slowly orbits behind the vignette. The input border pulses once on load. The H1 types, holds, erases and cycles through short follow-up questions ("Who is it for?", "What problem does it solve?") to coax detail; it stops once the visitor types, and the stable question stays in the DOM for screen readers and crawlers. A preset tap typewriters its text into the input, then submits. |
 | 02 Generating | Wireframe edges draw in stroke by stroke (dashed → solid), with buildings appearing in parse order. Log lines type in with a 120ms stagger, and a ✓ pops after each. The percentage counts up in sync with the bar. |
 | 03 HUD | Progress segments fill left → right (600ms, ease-out) when a building goes live. Shards pop in at scale 0.6 → 1.08 → 1 with a blue flash. Hovering a building or row makes the building glow and shows its tooltip. |
 | 04 Detail | The panel slides in from the right (320ms, `ease-out-expo`) while the camera eases the building into the left third. The proof card fades up 80ms later. |
 | 05 Mini-game | The modal scales 0.96 → 1 with a backdrop blur. While dragging, the wire follows the pointer as dashed amber, then snaps solid blue on a valid port. A wrong port causes a 150ms shake. The timer ring drains clockwise and turns red under 3s. On success, the building sweeps from wireframe to solid, bottom to top (900ms), and the shard flies to the inventory. |
 | 06 Launch | When the last building goes live, there's a 1s pause. Then the rocket lifts off with an amber trail, the camera tilts up, and every window lights in a ripple from the center. The brief types in section by section. |
-| 07 Work | Cards lift on hover (border → `#60A5FA` plus a soft glow). Nothing else animates. |
+| 07 Work | Cards lift on hover (border → `#60A5FA` plus a soft glow). The hero H1 and the contact H2 type in once, the first time they scroll into view (`TypeOnView`); the full text is in the server HTML and shown immediately under reduced motion. The Experience heading types in too, and its timeline rows reveal one by one on scroll (`RevealOnView`: fade up, diamond pops, connector draws down, 120ms stagger). Nothing else animates. |
 
 ### Rules
 

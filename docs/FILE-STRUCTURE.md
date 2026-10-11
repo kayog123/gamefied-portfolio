@@ -111,7 +111,8 @@ fullstack-portfolio/
 │  │  └─ …
 │  ├─ skills.ts
 │  ├─ experience.ts
-│  └─ presets.ts                 # 5 idea presets + their fallback blueprints
+│  ├─ presets.ts                 # 5 idea presets + their fallback blueprints
+│  └─ spark-questions.ts         # Rotating Sheet 01 headline questions
 │
 ├─ types/                        # Global/shared types (domain models)
 │  └─ blueprint.ts               # Feature, Building, BuildStatus, Blueprint, Shard…
@@ -260,6 +261,8 @@ Write a custom hook when **stateful or effectful logic** is:
 | `useHotkeys(map, opts)` | Keyboard shortcuts (Esc, ↑/↓, ↵, Enter vs Shift+Enter) | Spark, HUD, detail, mini-game |
 | `useCountdown(seconds, opts)` | Drift-free countdown with `onExpire` | Mini-game timer ring |
 | `useCountUp(target, opts)` | Animated number for `68%` and progress percentages | Generating, HUD |
+| `useTypeOnView({ length })` | Reveals text once, when it first scrolls into view; full text for SSR and reduced motion (`components/type-on-view.tsx`) | Work hero, Contact |
+| `useInView({ threshold })` | True once an element has scrolled into view (sticky) (`components/reveal-on-view.tsx`) | Work experience timeline |
 | `useFocusReturn(isOpen)` | Remembers the trigger and restores focus on close | Detail panel, modal, sheets |
 | `useDisclosure()` | `isOpen` / `open` / `close` / `toggle` | Panels, sheets, modals |
 
@@ -268,6 +271,7 @@ Write a custom hook when **stateful or effectful logic** is:
 | Hook | Feature | Purpose |
 |------|---------|---------|
 | `useTypewriter(text, opts)` | `spark` | Types a preset into the idea input, then calls `onDone` |
+| `useRotatingTypewriter({ lines, paused })` | `spark` | Types, holds, erases and cycles the Sheet 01 headline questions (`content/spark-questions.ts`); frozen on the full line when paused or reduced motion |
 | `useBlueprintGeneration()` | `generating` | Calls `/api/blueprint`, streams log lines and progress, falls back to the closest preset on error |
 | `useGame()` | `game` | Reads game state and dispatch from `GameProvider` |
 | `useBuildProgress()` | `game` | Derived values: `percent`, `liveCount`, segment statuses, collected shards |
