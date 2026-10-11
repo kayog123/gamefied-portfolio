@@ -7,7 +7,7 @@ import { GameProvider } from '@/features/game';
 export default function GameLayout({ children }: LayoutProps<'/'>) {
   return (
     <GameProvider>
-      <div className="bg-blueprint h-dvh overflow-hidden">{children}</div>
+      <div className="bg-blueprint fixed inset-0 overflow-x-hidden overflow-y-auto">{children}</div>
     </GameProvider>
   );
 }

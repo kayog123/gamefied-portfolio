@@ -43,7 +43,7 @@ export function SparkScreen() {
   }
 
   return (
-    <div className="relative flex h-full flex-col overflow-x-hidden">
+    <div className="relative flex min-h-full flex-col overflow-clip">
       <div className="absolute inset-0 opacity-[0.18] md:opacity-[0.16]">
         <CityScene mode="wire" scale={isDesktop ? 1.7 : 0.75} y={isDesktop ? 380 : 300} interactive={false} />
       </div>
@@ -52,14 +52,14 @@ export function SparkScreen() {
         style={{ background: 'radial-gradient(ellipse 60% 55% at 50% 42%, rgb(11 18 32 / 0.85), transparent 80%)' }}
       />
 
-      <GameTopBar context="BLUEPRINT" />
+      <GameTopBar context="BLUEPRINT" className="sticky top-0" />
 
-      <div className="relative flex min-h-0 flex-1 flex-col items-center overflow-y-auto px-5 pb-10 pt-10 md:overflow-y-hidden md:px-0 md:pb-0 md:pt-[90px]">
+      <div className="relative flex flex-1 flex-col items-center px-5 pb-10 pt-10 md:px-0 md:pb-10 md:pt-[60px] min-[1440px]:pt-[90px]">
         <div className="flex w-full max-w-[880px] flex-col items-start gap-0 md:items-center md:text-center">
           <div className="hidden md:flex">
             <EyebrowRule>SHEET 01 — SPARK</EyebrowRule>
           </div>
-          <h1 className="mt-3.5 text-balance font-display text-[42px] font-semibold leading-[1.04] tracking-display text-text-strong md:mt-[22px] md:text-[56px] md:leading-[1.03] lg:whitespace-nowrap lg:text-[78px] lg:leading-[1.02]">
+          <h1 className="mt-3.5 text-balance font-display text-[42px] font-semibold leading-[1.04] tracking-display text-text-strong md:mt-[22px] md:text-[56px] md:leading-[1.03] lg:whitespace-nowrap min-[1440px]:text-[78px] min-[1440px]:leading-[1.02]">
             What do you want to build?
           </h1>
           <p className="mt-3 font-sans text-base text-muted md:mt-[18px] md:text-[19px]">
