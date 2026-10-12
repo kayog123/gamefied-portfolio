@@ -1,31 +1,22 @@
 import { PROJECTS } from '../projects';
-import { aiCustomerServiceAgent } from './ai-customer-service-agent';
-import { automatedVideoPipeline } from './automated-video-pipeline';
-import { browserAutomationAgent } from './browser-automation-agent';
-import { codaComplianceTool } from './coda-compliance-tool';
-import { mapboxFarePaymentSystem } from './mapbox-fare-payment-system';
-import { pawpay } from './pawpay';
+import type { CaseStudy } from './case-study.types';
 
 export type { CaseStudy, ArchitectureStep, Decision, ResultMetric } from './case-study.types';
 
-/** All 6 case studies (Sheet 08), keyed by slug — one per `content/projects.ts` entry. */
-export const CASE_STUDIES = {
-  'set-dialer': aiCustomerServiceAgent,
-  'nexus-odm': codaComplianceTool,
-  'filipina-dating-app': pawpay,
-  'livelihood-mobile-app': automatedVideoPipeline,
-  'behold-bohol-trip': mapboxFarePaymentSystem,
-  'love-bohol-portal': browserAutomationAgent,
-};
+/**
+ * Written case studies (Sheet 08), keyed by project slug. A project with no
+ * entry here gets the plain project page built from `content/projects.ts`.
+ * Add an entry only once it describes that real project.
+ */
+export const CASE_STUDIES: Partial<Record<string, CaseStudy>> = {};
 
 export function getCaseStudy(slug: string) {
   const project = PROJECTS.find((p) => p.slug === slug);
-  const caseStudy = CASE_STUDIES[slug as keyof typeof CASE_STUDIES];
-  if (!project || !caseStudy) return undefined;
-  return { project, caseStudy };
+  if (!project) return undefined;
+  return { project, caseStudy: CASE_STUDIES[slug] };
 }
 
-/** The next case study in `content/projects.ts` order, wrapping to the first. */
+/** The next project in `content/projects.ts` order, wrapping to the first. */
 export function getNextProject(slug: string) {
   const index = PROJECTS.findIndex((p) => p.slug === slug);
   return PROJECTS[(index + 1) % PROJECTS.length];

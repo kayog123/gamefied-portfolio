@@ -1,8 +1,7 @@
 import { PROJECTS } from '@/content/projects';
-import { MobileShippedWork } from './mobile-shipped-work';
-import { ProjectCard } from './project-card';
+import { ShippedWorkGrid } from './shipped-work-grid';
 
-/** Sheet 07 "Shipped work" — all 6 on desktop, top 2 + a link on mobile. */
+/** Sheet 07 "Shipped work": filterable by platform (and scope, once projects differ). */
 export function ShippedWork() {
   return (
     <section id="work" className="px-5 py-12 md:px-12 md:py-20">
@@ -12,15 +11,7 @@ export function ShippedWork() {
       </div>
       <h2 className="font-display text-[26px] font-semibold text-text-strong md:hidden">Shipped work</h2>
 
-      <div className="mt-5 hidden grid-cols-3 gap-5 md:mt-9 md:grid">
-        {PROJECTS.map((project) => (
-          <ProjectCard key={project.slug} project={project} />
-        ))}
-      </div>
-
-      <div className="mt-3.5">
-        <MobileShippedWork />
-      </div>
+      <ShippedWorkGrid />
     </section>
   );
 }

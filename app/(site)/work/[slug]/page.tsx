@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getCaseStudy } from '@/content/case-studies';
 import { PROJECTS } from '@/content/projects';
-import { CaseStudyPage } from '@/features/case-study';
+import { CaseStudyPage, ProjectSummaryPage } from '@/features/case-study';
 
 export function generateStaticParams() {
   return PROJECTS.map((p) => ({ slug: p.slug }));
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps<'/work/[slug]'>): P
 
   return {
     title: entry.project.title,
-    description: entry.caseStudy.lead,
+    description: entry.caseStudy?.lead ?? `${entry.project.problem} ${entry.project.result}`,
     alternates: { canonical: `/work/${slug}` },
   };
 }
@@ -32,5 +32,6 @@ export default async function Page({ params }: PageProps<'/work/[slug]'>) {
   const entry = getCaseStudy(slug);
   if (!entry) notFound();
 
+  if (!entry.caseStudy) return <ProjectSummaryPage project={entry.project} />;
   return <CaseStudyPage project={entry.project} caseStudy={entry.caseStudy} />;
 }

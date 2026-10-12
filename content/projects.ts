@@ -2,11 +2,21 @@
  * The 6 shipped projects (Sheet 07 "Shipped work" grid).
  * Each links to a full case study at `/work/[slug]` (Sheet 08).
  */
+export type ProjectPlatform = 'web' | 'mobile';
+export type ProjectScope = 'frontend' | 'fullstack';
+
+export const PLATFORM_LABEL: Record<ProjectPlatform, string> = { web: 'Web', mobile: 'Mobile' };
+export const SCOPE_LABEL: Record<ProjectScope, string> = { frontend: 'Front end', fullstack: 'Full stack' };
+
 export type Project = {
   slug: string;
   /** "01"–"06" — also used as the case study's CASE number. */
   idx: string;
   kind: string;
+  /** Where it runs. Drives the Web / Mobile filter on /work. */
+  platform: ProjectPlatform;
+  /** How much of it I built. A filter chip only appears once a project uses that value. */
+  scope: ProjectScope;
   title: string;
   /** Path under /public for the project screenshot, e.g. "/projects/set-dialer.png". Null = placeholder. */
   image: string | null;
@@ -26,6 +36,8 @@ export const PROJECTS: Project[] = [
     slug: 'set-dialer',
     idx: '01',
     kind: 'SAAS / VOICE',
+    platform: 'web',
+    scope: 'fullstack',
     title: 'Set Dialer',
     image: '/projects/set-dialer.png',
     shot: 'screenshot — dialer dashboard',
@@ -39,6 +51,8 @@ export const PROJECTS: Project[] = [
     slug: 'nexus-odm',
     idx: '02',
     kind: 'MARKETPLACE',
+    platform: 'web',
+    scope: 'fullstack',
     title: 'Nexus ODM',
     image: '/projects/nexus-odm.png',
     shot: 'screenshot — collaboration dashboard',
@@ -52,6 +66,8 @@ export const PROJECTS: Project[] = [
     slug: 'filipina-dating-app',
     idx: '03',
     kind: 'SOCIAL / DATING',
+    platform: 'web',
+    scope: 'fullstack',
     title: 'Filipina Dating App',
     image: '/projects/filipina-dream.png',
     shot: 'screenshot — match feed',
@@ -65,6 +81,8 @@ export const PROJECTS: Project[] = [
     slug: 'livelihood-mobile-app',
     idx: '04',
     kind: 'MOBILE / MARKETPLACE',
+    platform: 'mobile',
+    scope: 'fullstack',
     title: 'Livelihood Mobile App',
     image: '/projects/livelihood.png',
     shot: 'screenshot — product marketplace',
@@ -78,6 +96,8 @@ export const PROJECTS: Project[] = [
     slug: 'behold-bohol-trip',
     idx: '05',
     kind: 'MOBILE / TRANSPORT',
+    platform: 'mobile',
+    scope: 'fullstack',
     title: 'Behold Bohol Trip',
     image: '/projects/bbtrip.png',
     shot: 'screenshot — booking screen',
@@ -91,6 +111,8 @@ export const PROJECTS: Project[] = [
     slug: 'love-bohol-portal',
     idx: '06',
     kind: 'ADMIN / CMS',
+    platform: 'web',
+    scope: 'fullstack',
     title: 'Love Bohol Portal',
     image: '/projects/love-bohol.png',
     shot: 'screenshot — business dashboard',
