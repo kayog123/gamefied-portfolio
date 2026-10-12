@@ -28,6 +28,8 @@ fullstack-portfolio/
 │  │  └─ page.tsx                # "/"  →  Spark → Generating → HUD → … → Launch
 │  ├─ (site)/                    # Route group: static, scrollable pages
 │  │  ├─ layout.tsx              # Site top bar + footer
+│  │  ├─ process/
+│  │  │  └─ page.tsx             # "/process"  (client process, discovery call → delivery, + FAQ)
 │  │  └─ work/
 │  │     ├─ page.tsx             # "/work"         (07 See My Work)
 │  │     └─ [slug]/

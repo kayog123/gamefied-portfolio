@@ -16,6 +16,7 @@ The home page (`/`) is an interactive game. A crawler or AI model fetching it ge
 |-------|----------------|---------|
 | `/` (game) | Brand entry point. Server-renders its **real text** (H1, intro, nav links to `/work`) and carries the site-wide `WebSite` + `Person` schema | ✅ |
 | `/work` (07 See My Work) | **Primary entity page.** Who I am, what I build, skills, experience, 6 projects. Where most rankings and AI citations should land | ✅ |
+| `/process` | **Client-process page.** How a project runs, discovery call to delivery, plus FAQ. Targets "how does a freelance developer work" queries and AI answers | ✅ |
 | `/work/[slug]` (08 Case study) | **Primary content pages.** Long-tail queries ("NestJS BullMQ pgvector compliance tool"), proof that gets cited | ✅ |
 | `/api/*` | Endpoints | ❌ disallow |
 | `/components` (UI kit preview) | Dev only | ❌ `noindex` (and excluded from prod) |
@@ -150,7 +151,8 @@ Rendered as a `<script type="application/ld+json">` in the layout or page, as Ne
 | `ItemList` of `CreativeWork` | `/work` | The 6 projects, each with `url` → case study |
 | `Article` (or `TechArticle`) | `/work/[slug]` | `headline`, `description`, `author → /#person`, `datePublished`, `dateModified`, `image`, `about` (technologies), `keywords` |
 | `BreadcrumbList` | `/work/[slug]` | Work › Case study |
-| `FAQPage` | `/work` FAQ section (see AEO) | Only for questions **visibly answered** on the page |
+| `FAQPage` | `/process` FAQ section (see AEO) | Only for questions **visibly answered** on the page |
+| `HowTo` | `/process` | One `HowToStep` per visible stage, built from `content/process.ts` |
 
 ```tsx
 // components/seo/json-ld.tsx (Server Component)
@@ -197,9 +199,9 @@ The goal is to be the **direct answer**, as a featured snippet, a voice answer, 
 - **Definitions and comparisons as lists or tables.** The case-study "Key decisions & trade-offs" cards are ideal answer material. Keep each one to a decision, a reason and a trade-off in plain sentences.
 - **Concise first, detail second.** Short answer paragraph, then depth.
 
-### FAQ section on `/work`
+### Process page and FAQ on `/process`
 
-Add a visible FAQ near the contact section that answers what clients and recruiters actually ask. Draft questions:
+`/process` explains how a project runs from discovery call to delivery (seven stages, `content/process.ts`) and ends with a visible FAQ marked up as `FAQPage`. The schema lives on `/process` only. Don't duplicate it on `/work`. Answers are 40–80 words, name Jovanni, and make sense when quoted alone. The page shows a real "Last updated" date (`PROCESS_UPDATED`). Update it whenever the content changes. The original draft question list:
 
 - What kinds of products do you build?
 - Which tech stack do you use? *(Next.js, NestJS, PostgreSQL/pgvector, Claude API, AWS, React Native)*

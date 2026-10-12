@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: '/work#work', label: 'Work' },
   { href: '/work#skills', label: 'Skills' },
   { href: '/work#experience', label: 'Experience' },
+  { href: '/process', label: 'Process' },
   { href: '/work#contact', label: 'Contact' },
 ];
 
