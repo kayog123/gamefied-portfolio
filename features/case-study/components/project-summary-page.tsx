@@ -1,4 +1,5 @@
 import { ExternalLink, Play } from 'lucide-react';
+import { DeviceMockup } from '@/components/device-mockup';
 import Image from 'next/image';
 import Link from 'next/link';
 import { SiteTopBar } from '@/components/layout/site-top-bar';
@@ -64,7 +65,9 @@ export function ProjectSummaryPage({ project }: { project: Project }) {
       </div>
 
       <div className="px-5 pb-12 md:px-40 md:pb-[72px]">
-        {project.image ? (
+        {project.image && project.mobileImage ? (
+          <DeviceMockup title={project.title} desktop={project.image} mobile={project.mobileImage} size="hero" priority />
+        ) : project.image ? (
           <div className="relative h-[220px] overflow-hidden rounded-control border border-glow/40 md:h-[480px]">
             <Image src={project.image} alt={`${project.title} screenshot`} fill className="object-cover" sizes="(max-width: 768px) 100vw, 1160px" priority />
           </div>

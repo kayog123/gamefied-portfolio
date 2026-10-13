@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ExternalLink, Play } from 'lucide-react';
 import type { Project } from '@/content/projects';
+import { DeviceMockup } from '@/components/device-mockup';
 
 export type ProjectCardProps = {
   project: Project;
@@ -18,7 +19,9 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
       {/* Ghost link covers the whole card — the primary tap/click target */}
       <Link href={`/work/${project.slug}`} className="focus-blueprint absolute inset-0 z-0" aria-label={project.title} />
 
-      {project.image ? (
+      {project.image && project.mobileImage ? (
+        <DeviceMockup title={project.title} desktop={project.image} mobile={project.mobileImage} />
+      ) : project.image ? (
         <div className={compact ? 'relative h-[150px] overflow-hidden' : 'relative aspect-[16/10] overflow-hidden border-b border-glow/25'}>
           <Image src={project.image} alt={project.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
         </div>

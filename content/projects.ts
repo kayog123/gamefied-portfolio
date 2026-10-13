@@ -1,5 +1,5 @@
 /**
- * The 6 shipped projects (Sheet 07 "Shipped work" grid).
+ * The shipped projects (Sheet 07 "Shipped work" grid).
  * Each links to a full case study at `/work/[slug]` (Sheet 08).
  */
 export type ProjectPlatform = 'web' | 'mobile';
@@ -20,6 +20,8 @@ export type Project = {
   title: string;
   /** Path under /public for the project screenshot, e.g. "/projects/set-dialer.png". Null = placeholder. */
   image: string | null;
+  /** Optional phone screenshot. When set, the shot renders as a layered desktop + phone mockup. */
+  mobileImage?: string;
   /** Placeholder label for the screenshot slot when no image is supplied. */
   shot: string;
   problem: string;
@@ -120,6 +122,70 @@ export const PROJECTS: Project[] = [
     stack: ['Next.js', 'DynamoDB', 'Algolia', 'AWS S3', 'MUI'],
     result: 'CMS portal feeding live business data directly into the Skyride mobile travel app.',
     url: 'https://www.beholdbohol.com/',
+    urlKind: 'live',
+  },
+  {
+    slug: 'roofing-company',
+    idx: '07',
+    kind: 'WEBSITE / ROOFING',
+    platform: 'web',
+    scope: 'frontend',
+    title: 'Roofing Company',
+    image: '/projects/roofing-company-desktop.png',
+    mobileImage: '/projects/roofing-company-mobile.png',
+    shot: 'screenshot — roofing company site',
+    problem: 'A roofing company needed a professional website to present its services and win quote requests.',
+    stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Vercel'],
+    result: 'Responsive marketing site built front end only, deployed on Vercel.',
+    url: 'https://roofing-company-gamma.vercel.app/',
+    urlKind: 'live',
+  },
+  {
+    slug: 'women-essentials',
+    idx: '08',
+    kind: 'WEBSITE / E-COMMERCE',
+    platform: 'web',
+    scope: 'frontend',
+    title: 'Women Essentials',
+    image: '/projects/women-essentials-desktop.png',
+    mobileImage: '/projects/women-essentials-mobile.png',
+    shot: 'screenshot — storefront',
+    problem: 'A women’s essentials brand needed a storefront front end to showcase its products online.',
+    stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Vercel'],
+    result: 'Responsive storefront UI built front end only, deployed on Vercel.',
+    url: 'https://women-essentials-sand.vercel.app/',
+    urlKind: 'live',
+  },
+  {
+    slug: 'travel-and-tours',
+    idx: '09',
+    kind: 'WEBSITE / TRAVEL',
+    platform: 'web',
+    scope: 'frontend',
+    title: 'Travel and Tours',
+    image: '/projects/travel-and-tours-desktop.png',
+    mobileImage: '/projects/travel-and-tours-mobile.png',
+    shot: 'screenshot — travel and tours site',
+    problem: 'A travel and tours business needed a website to present destinations and packages to visitors.',
+    stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Vercel'],
+    result: 'Responsive travel site built front end only, deployed on Vercel.',
+    url: 'https://travel-and-tours-blush.vercel.app/',
+    urlKind: 'live',
+  },
+  {
+    slug: 'real-estate',
+    idx: '10',
+    kind: 'WEBSITE / REAL ESTATE',
+    platform: 'web',
+    scope: 'frontend',
+    title: 'Real Estate',
+    image: '/projects/real-estate-desktop.png',
+    mobileImage: '/projects/real-estate-mobile.png',
+    shot: 'screenshot — property listings',
+    problem: 'A real estate business needed a website to showcase property listings to prospective buyers.',
+    stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Vercel'],
+    result: 'Responsive property site built front end only, deployed on Vercel.',
+    url: 'https://real-estate-topaz-five.vercel.app/',
     urlKind: 'live',
   },
 ];
