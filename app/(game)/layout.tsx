@@ -1,4 +1,5 @@
 import { GridPulses } from '@/components/layout/grid-pulses';
+import { PulseShooter } from '@/components/layout/pulse-shooter';
 import { GameProvider } from '@/features/game';
 
 /**
@@ -10,6 +11,7 @@ export default function GameLayout({ children }: LayoutProps<'/'>) {
     <GameProvider>
       <div className="bg-blueprint fixed inset-0 overflow-x-hidden overflow-y-auto">
         <GridPulses />
+        <PulseShooter />
         {children}
       </div>
     </GameProvider>

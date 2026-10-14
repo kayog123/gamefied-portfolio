@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Analytics } from "@vercel/analytics/next"
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
+import { CustomCursor } from '@/components/custom-cursor';
 import { SITE_URL } from '@/lib/site';
 import './globals.css';
 
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     >
       <body className="min-h-dvh bg-navy font-sans text-text antialiased">
         {children}
+        <CustomCursor />
         <Analytics/>
       </body>
     </html>

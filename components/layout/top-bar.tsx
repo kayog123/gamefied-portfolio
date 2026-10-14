@@ -49,7 +49,7 @@ export function GameTopBar({ context, center, mobileLeft, className }: GameTopBa
           href="/work#contact"
           variant="secondary"
           size="sm"
-          iconLeft={<MessageCircle className="hidden size-[15px] md:inline" aria-hidden />}
+          iconLeft={<MessageCircle className="hidden size-[15px] animate-nudge md:inline" aria-hidden />}
         >
           Talk to me
         </Button>

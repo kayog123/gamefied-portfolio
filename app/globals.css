@@ -148,6 +148,132 @@
   }
 }
 
+/*
+ * Custom cursor (<CustomCursor>): glowing dot + trailing crosshair ring. The component only
+ * mounts for fine pointers with motion allowed and adds `.custom-cursor-on` to <html>.
+ */
+.custom-cursor-on,
+.custom-cursor-on * {
+  cursor: none !important;
+}
+.custom-cursor-on :is(input, textarea, [contenteditable='true']) {
+  cursor: text !important;
+}
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-blueprint);
+  will-change: transform;
+}
+.cursor-dot[data-ready='true'],
+.cursor-ring[data-ready='true'] {
+  opacity: 1;
+}
+.cursor-dot[data-state='text'],
+.cursor-ring[data-state='text'] {
+  opacity: 0;
+}
+.cursor-dot::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 9999px;
+  background: var(--color-glow-pale);
+  box-shadow:
+    0 0 6px var(--color-glow),
+    0 0 16px rgb(59 130 246 / 0.7);
+  transition:
+    scale 200ms var(--ease-blueprint),
+    background-color 200ms;
+}
+.cursor-dot[data-state='hover']::before {
+  scale: 0.5;
+  background: var(--color-cta-hover);
+}
+.cursor-dot[data-pressed='true']::before {
+  scale: 1.8;
+}
+.cursor-ring-body {
+  position: absolute;
+  display: block;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border: 1px solid rgb(96 165 250 / 0.55);
+  border-radius: 9999px;
+  /* Crosshair ticks at N / E / S / W, like a drafting registration mark. */
+  background:
+    linear-gradient(var(--color-glow), var(--color-glow)) 50% -3px / 1px 8px no-repeat,
+    linear-gradient(var(--color-glow), var(--color-glow)) 50% calc(100% + 3px) / 1px 8px no-repeat,
+    linear-gradient(var(--color-glow), var(--color-glow)) -3px 50% / 8px 1px no-repeat,
+    linear-gradient(var(--color-glow), var(--color-glow)) calc(100% + 3px) 50% / 8px 1px no-repeat;
+  animation: cursor-spin 8s linear infinite;
+  transition:
+    scale 250ms var(--ease-blueprint),
+    border-color 200ms,
+    background-color 200ms;
+}
+.cursor-ring[data-state='hover'] .cursor-ring-body {
+  scale: 1.7;
+  border-color: rgb(251 191 36 / 0.7);
+  background-color: rgb(251 191 36 / 0.08);
+}
+.cursor-ring[data-pressed='true'] .cursor-ring-body {
+  scale: 0.7;
+}
+@keyframes cursor-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* Attention nudge — a quick chat-bubble wiggle every few seconds (top bar "Talk to me"). */
+@utility animate-nudge {
+  transform-origin: 50% 80%;
+  animation:
+    nudge 4s var(--ease-blueprint) 1.5s infinite,
+    nudge-blink 1.6s ease-in-out infinite;
+}
+@keyframes nudge-blink {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    color: var(--color-cta-hover);
+    filter: drop-shadow(0 0 4px rgb(251 191 36 / 0.9));
+  }
+}
+@keyframes nudge {
+  0%,
+  22%,
+  100% {
+    transform: rotate(0) scale(1);
+  }
+  4% {
+    transform: rotate(-14deg) scale(1.2);
+  }
+  9% {
+    transform: rotate(12deg) scale(1.2);
+  }
+  14% {
+    transform: rotate(-8deg) scale(1.1);
+  }
+  18% {
+    transform: rotate(4deg) scale(1.05);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-nudge {
+    animation: none;
+  }
+}
+
 /* Blinking caret / cursor, e.g. the generation log's active line. */
 @utility animate-caret-blink {
   animation: caret-blink 1s step-end infinite;
@@ -247,6 +373,99 @@
   background: linear-gradient(180deg, transparent, rgb(96 165 250 / 0.85) 80%, var(--color-glow-pale));
   box-shadow: 0 0 10px 1px rgb(59 130 246 / 0.55);
   animation: pulse-run-y var(--dur) linear var(--delay) infinite;
+}
+
+/* The bright "head" leading each streak (the bonus target in <PulseShooter>). */
+.grid-pulse-x::after,
+.grid-pulse-y::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--color-glow-pale);
+  box-shadow:
+    0 0 6px 2px var(--color-glow),
+    0 0 18px 4px rgb(59 130 246 / 0.6);
+}
+.grid-pulse-x::after {
+  right: -3px;
+  top: 50%;
+  margin-top: -4px;
+}
+.grid-pulse-y::after {
+  bottom: -3px;
+  left: 50%;
+  margin-left: -4px;
+}
+/* Shot streaks vanish until their next cycle. */
+.grid-pulse-x[data-shot],
+.grid-pulse-y[data-shot] {
+  visibility: hidden;
+}
+
+/* <PulseShooter> feedback: a ping at the click point and a floating score label on hits. */
+.shot-burst {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.shot-burst-ring {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border: 1.5px solid rgb(96 165 250 / 0.7);
+  border-radius: 9999px;
+  animation: shot-ping 450ms var(--ease-blueprint) forwards;
+}
+.shot-burst[data-kind='hit'] .shot-burst-ring {
+  border-color: var(--color-glow-pale);
+  box-shadow: 0 0 14px var(--color-glow);
+}
+.shot-burst[data-kind='head'] .shot-burst-ring {
+  border-color: var(--color-cta-hover);
+  box-shadow: 0 0 20px rgb(251 191 36 / 0.8);
+  animation-duration: 650ms;
+  --ping-scale: 5;
+}
+.shot-burst-pop {
+  position: absolute;
+  left: 0;
+  top: -14px;
+  translate: -50% 0;
+  white-space: nowrap;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-glow-pale);
+  text-shadow: 0 0 8px var(--color-glow);
+  animation: shot-pop 800ms var(--ease-blueprint) forwards;
+}
+.shot-burst[data-kind='head'] .shot-burst-pop {
+  color: var(--color-cta-hover);
+  text-shadow: 0 0 10px rgb(251 191 36 / 0.8);
+}
+@keyframes shot-ping {
+  from {
+    opacity: 1;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 0;
+    transform: scale(var(--ping-scale, 3));
+  }
+}
+@keyframes shot-pop {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-34px);
+  }
 }
 
 /* Single-level grid (content pages 07–08, component sheet). */

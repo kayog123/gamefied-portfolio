@@ -43,6 +43,9 @@ export function GridPulses() {
       {PULSES.map((p) => (
         <span
           key={`${p.axis}-${p.line}`}
+          data-pulse=""
+          data-axis={p.axis}
+          data-reverse={p.reverse ? '' : undefined}
           className={cn(p.axis === 'x' ? 'grid-pulse-x' : 'grid-pulse-y', 'will-change-transform')}
           style={
             {
