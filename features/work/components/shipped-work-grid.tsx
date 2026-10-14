@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Chip } from '@/components/blueprint';
 import {
   PLATFORM_LABEL,
   PROJECTS,
@@ -38,17 +37,42 @@ function FilterRow<T extends string>({
   // A single option means there is nothing to filter by.
   if (options.length < 2) return null;
 
+  const items: { key: Filter<T>; text: string }[] = [
+    { key: 'all', text: 'All' },
+    ...options.map((option) => ({ key: option, text: labels[option] })),
+  ];
+
   return (
-    <div role="group" aria-label={label} className="flex flex-wrap items-center gap-2">
-      <span className="mr-1 font-mono text-[11px] tracking-label text-text-faint uppercase">{label}</span>
-      <Chip className="h-9 px-3.5" selected={value === 'all'} onClick={() => onChange('all')}>
-        All
-      </Chip>
-      {options.map((option) => (
-        <Chip key={option} className="h-9 px-3.5" selected={value === option} onClick={() => onChange(option)}>
-          {labels[option]}
-        </Chip>
-      ))}
+    <div role="group" aria-label={label} className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
+      <span className="font-mono text-[11px] tracking-label text-text-faint uppercase md:w-20 md:shrink-0">
+        {label}
+      </span>
+      {/* Segmented control: one track, the active segment lights up. Scrolls sideways on narrow screens. */}
+      <div className="-mx-1 overflow-x-auto px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="inline-flex gap-1 rounded-control border border-glow/25 bg-navy/60 p-1">
+          {items.map(({ key, text }) => {
+            const active = value === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={active}
+                onClick={() => onChange(key)}
+                className={`focus-blueprint inline-flex h-9 shrink-0 items-center gap-1.5 rounded-tag px-3.5 font-sans text-sm font-medium whitespace-nowrap transition-colors ${
+                  active
+                    ? 'bg-glow/20 text-text-strong shadow-[inset_0_0_0_1px] shadow-glow'
+                    : 'text-text-soft hover:bg-glow/10 hover:text-text-strong'
+                }`}
+              >
+                {active && (
+                  <span aria-hidden className="size-1.5 rounded-full bg-glow shadow-[0_0_8px] shadow-glow" />
+                )}
+                {text}
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
@@ -66,13 +90,33 @@ export function ShippedWorkGrid() {
   const filtered = PROJECTS.filter(
     (p) => (platform === 'all' || p.platform === platform) && (scope === 'all' || p.scope === scope),
   );
+  const isFiltered = platform !== 'all' || scope !== 'all';
   const mobileVisible = expanded ? filtered : filtered.slice(0, 2);
 
   return (
     <>
-      <div className="mt-5 flex flex-col gap-3 md:mt-7">
-        <FilterRow label="Platform" options={PLATFORMS} labels={PLATFORM_LABEL} value={platform} onChange={setPlatform} />
-        <FilterRow label="Scope" options={SCOPES} labels={SCOPE_LABEL} value={scope} onChange={setScope} />
+      <div className="mt-5 rounded-panel border border-glow/30 bg-glass p-4 backdrop-blur-sm md:mt-7 md:p-5">
+        <div className="mb-3 flex items-center justify-between gap-3 border-b border-glow/20 pb-3">
+          <span className="font-mono text-[11px] tracking-label text-glow-pale uppercase">
+            Filter · {filtered.length}/{PROJECTS.length} shown
+          </span>
+          {isFiltered && (
+            <button
+              type="button"
+              onClick={() => {
+                setPlatform('all');
+                setScope('all');
+              }}
+              className="focus-blueprint rounded-tag px-2 py-1 font-mono text-[11px] tracking-label text-text-soft uppercase hover:text-text-strong"
+            >
+              Reset ×
+            </button>
+          )}
+        </div>
+        <div className="flex flex-col gap-4 md:gap-3">
+          <FilterRow label="Platform" options={PLATFORMS} labels={PLATFORM_LABEL} value={platform} onChange={setPlatform} />
+          <FilterRow label="Scope" options={SCOPES} labels={SCOPE_LABEL} value={scope} onChange={setScope} />
+        </div>
       </div>
 
       <p className="sr-only" role="status">
