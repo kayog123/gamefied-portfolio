@@ -30,7 +30,7 @@ export function SiteTopBar({ variant = 'work', className }: SiteTopBarProps) {
 
   return (
     <header className={cn('relative z-40 border-b border-grid bg-navy/85', className)}>
-      <div className="flex h-14 items-center justify-between px-4 md:h-16 md:px-12">
+      <div className="mx-auto flex h-14 w-full max-w-page items-center justify-between px-4 md:h-16 md:px-12">
         {variant === 'case-study' ? (
           <Link href="/work" className="focus-blueprint flex items-center">
             <ArrowLeft className="size-5 text-text-soft md:hidden" aria-hidden />

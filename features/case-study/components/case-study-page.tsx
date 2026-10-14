@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { SiteTopBar } from '@/components/layout/site-top-bar';
+import { PageWrapper } from '@/components/layout/page-wrapper';
 import type { CaseStudy } from '@/content/case-studies';
 import { getNextProject } from '@/content/case-studies';
 import type { Project } from '@/content/projects';
@@ -21,9 +21,7 @@ export function CaseStudyPage({ project, caseStudy }: CaseStudyPageProps) {
   const next = getNextProject(project.slug);
 
   return (
-    <>
-      <SiteTopBar variant="case-study" />
-
+    <PageWrapper topBar="case-study">
       <div className="px-5 pb-10 pt-12 md:px-40 md:pb-14 md:pt-20">
         <div className="font-mono text-xs tracking-eyebrow text-glow">
           CASE STUDY {project.idx}
@@ -80,6 +78,6 @@ export function CaseStudyPage({ project, caseStudy }: CaseStudyPageProps) {
           {next.title} →
         </Link>
       </div>
-    </>
+    </PageWrapper>
   );
 }

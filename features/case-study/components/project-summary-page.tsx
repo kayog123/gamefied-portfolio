@@ -2,7 +2,7 @@ import { ExternalLink, Play } from 'lucide-react';
 import { DeviceMockup } from '@/components/device-mockup';
 import Image from 'next/image';
 import Link from 'next/link';
-import { SiteTopBar } from '@/components/layout/site-top-bar';
+import { PageWrapper } from '@/components/layout/page-wrapper';
 import { getNextProject } from '@/content/case-studies';
 import { PLATFORM_LABEL, SCOPE_LABEL, type Project } from '@/content/projects';
 import { SectionRow } from './section-row';
@@ -20,9 +20,7 @@ export function ProjectSummaryPage({ project }: { project: Project }) {
   ];
 
   return (
-    <>
-      <SiteTopBar variant="case-study" />
-
+    <PageWrapper topBar="case-study">
       <div className="px-5 pb-10 pt-12 md:px-40 md:pb-14 md:pt-20">
         <div className="font-mono text-xs tracking-eyebrow text-glow">
           PROJECT {project.idx}
@@ -91,6 +89,6 @@ export function ProjectSummaryPage({ project }: { project: Project }) {
           {next.title} →
         </Link>
       </div>
-    </>
+    </PageWrapper>
   );
 }

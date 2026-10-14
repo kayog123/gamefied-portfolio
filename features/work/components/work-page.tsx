@@ -1,6 +1,6 @@
 import { Play } from 'lucide-react';
 import { Button } from '@/components/blueprint';
-import { SiteTopBar } from '@/components/layout/site-top-bar';
+import { PageWrapper } from '@/components/layout/page-wrapper';
 import { ContactSection } from './contact-section';
 import { ExperienceSection } from './experience-section';
 import { Hero } from './hero';
@@ -10,8 +10,7 @@ import { SkillsSection } from './skills-section';
 /** Sheet 07 — See My Work: the static, recruiter-friendly 2D fallback. */
 export function WorkPage() {
   return (
-    <>
-      <SiteTopBar variant="work" />
+    <PageWrapper>
       <Hero />
       {/* Sheet 07b: full-width "Play the blueprint" CTA shown only on mobile */}
       <div className="px-5 pb-5 md:hidden">
@@ -23,6 +22,6 @@ export function WorkPage() {
       <SkillsSection />
       <ExperienceSection />
       <ContactSection />
-    </>
+    </PageWrapper>
   );
 }

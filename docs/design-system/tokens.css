@@ -57,6 +57,7 @@
 
   /* ---- Radius ---- */
   --radius-tag: 3px;
+  --container-page: 90rem; /* max content width of (site) pages: the 1440 design frame */
   --radius-control: 4px;
   --radius-panel: 6px;
   --radius-modal: 8px;
