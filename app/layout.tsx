@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import { CustomCursor } from '@/components/custom-cursor';
 import { JsonLd } from '@/components/seo/json-ld';
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           <CustomCursor />
         </Suspense>
         <Analytics/>
+        <SpeedInsights/>
       </body>
     </html>
   );
