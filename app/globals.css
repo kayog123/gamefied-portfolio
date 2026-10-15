@@ -529,6 +529,14 @@
 
   html {
     color-scheme: dark;
+    scroll-padding-top: 1rem;
+  }
+
+  /* Smooth in-page jumps (nav links to #skills etc.); reduced-motion visitors keep the instant jump. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {

@@ -48,7 +48,11 @@ export function Button({
 
   if (href && !disabled) {
     return (
-      <Link href={href} className={classes}>
+      <Link
+        href={href}
+        className={classes}
+        {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      >
         {iconLeft}
         {children}
         {iconRight}

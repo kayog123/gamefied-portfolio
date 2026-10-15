@@ -1,5 +1,5 @@
 import type { FaqItem, ProcessStage } from '@/content/process';
-import { SITE_URL } from '@/lib/site';
+import { SITE_URL, SOCIAL_LINKS } from '@/lib/site';
 
 /** `FAQPage`: only pass questions that are visibly answered on the page. */
 export function faqPageSchema(items: FaqItem[]) {
@@ -25,6 +25,7 @@ export function websiteSchema() {
     name: SITE_NAME,
     alternateName: ['Jovanni Jungco', 'Jungco Dev'],
     url: `${SITE_URL}/`,
+    sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.instagram],
   };
 }
 

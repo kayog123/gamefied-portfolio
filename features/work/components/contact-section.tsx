@@ -15,7 +15,11 @@ function SocialLink({ label, href }: { label: string; href?: string }) {
     );
   }
   return (
-    <a href={href} className="focus-blueprint font-mono text-xs tracking-label text-glow hover:text-glow-pale">
+    <a
+      href={href}
+      {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      className="focus-blueprint font-mono text-xs tracking-label text-glow hover:text-glow-pale"
+    >
       {label}
     </a>
   );
@@ -59,10 +63,17 @@ export function ContactSection() {
             {state === 'sent' ? 'Sent ✓' : 'Send message'}
           </Button>
         </div>
-        {state === 'error' && <p className="font-mono text-[11px] text-danger-text">Something went wrong — try again in a moment.</p>}
+        <div role="status" aria-live="polite">
+          {state === 'sent' && <p className="font-mono text-[11px] text-live-text">Got it. I&apos;ll reply to your email soon.</p>}
+          {state === 'error' && (
+            <p className="font-mono text-[11px] text-danger-text">
+              Something went wrong. Try again, or email me at {SOCIAL_LINKS.email}.
+            </p>
+          )}
+        </div>
         <div className="mt-1.5 flex gap-4.5">
-          <SocialLink label="GITHUB" href={SOCIAL_LINKS.github} />
           <SocialLink label="LINKEDIN" href={SOCIAL_LINKS.linkedin} />
+          <SocialLink label="INSTAGRAM" href={SOCIAL_LINKS.instagram} />
           <SocialLink label="EMAIL" href={SOCIAL_LINKS.email ? `mailto:${SOCIAL_LINKS.email}` : undefined} />
         </div>
       </div>

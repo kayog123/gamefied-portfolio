@@ -32,6 +32,8 @@ export function useContactForm(): UseContactFormResult {
     })
       .then((res) => {
         if (!res.ok) throw new Error(`/api/contact responded ${res.status}`);
+        setEmail('');
+        setMessage('');
         setState('sent');
       })
       .catch(() => setState('error'));

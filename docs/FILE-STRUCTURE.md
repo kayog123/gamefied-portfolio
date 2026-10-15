@@ -110,6 +110,7 @@ fullstack-portfolio/
 │  ├─ cn.ts                      # className join helper
 │  ├─ format.ts                  # Percent, counters ("2/5"), timestamps
 │  ├─ analytics.ts
+│  ├─ email/                     # Email sending (server-only): send-contact-email.ts (Resend)
 │  └─ ai/                        # AI client wrapper (server-only)
 │
 ├─ content/                      # Typed content data (no JSX)

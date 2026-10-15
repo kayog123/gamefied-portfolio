@@ -95,7 +95,7 @@ Targets are TBD until there's baseline traffic. Track these from launch:
 
 - [ ] **AI provider and model** for the idea → blueprint step. Claude is the likely default, since it's already in the showcased stack.
 - [ ] **Brief delivery:** which email service sends the brief, and where submissions are stored.
-- [ ] **Book a call:** which scheduling link (e.g. Cal.com or Calendly).
+- [x] **Book a call:** Calendly (set `NEXT_PUBLIC_CALENDLY_URL`; minimum notice 1 day, set in Calendly).
 - [ ] **PDF generation:** server-rendered or client-side.
 - [ ] **Real content:** experience entries (roles and dates), case-study metrics, screenshots and a portrait photo.
 - [ ] **Analytics tool** to track the success measures.

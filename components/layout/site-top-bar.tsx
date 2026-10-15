@@ -46,9 +46,9 @@ export function SiteTopBar({ variant = 'work', back = { href: '/work', label: 'A
         {variant === 'work' ? (
           <nav className="hidden items-center gap-1 font-sans text-sm md:flex">
             {NAV_LINKS.map((link) => (
-              <a key={link.href} href={link.href} className="focus-blueprint rounded-control px-3.5 py-2.5 text-text-soft hover:text-text">
+              <Link key={link.href} href={link.href} className="focus-blueprint rounded-control px-3.5 py-2.5 text-text-soft hover:text-text">
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
         ) : (
@@ -81,14 +81,14 @@ export function SiteTopBar({ variant = 'work', back = { href: '/work', label: 'A
       {variant === 'work' && menuOpen && (
         <nav className="flex flex-col border-t border-grid px-4 py-2 md:hidden">
           {NAV_LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
               className="focus-blueprint rounded-control px-2 py-3 font-sans text-sm text-text-soft"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
       )}

@@ -1,9 +1,12 @@
 /**
  * Site-wide constants that don't belong to one feature.
- * TODO(docs/PACKAGES.md#open-decisions): swap BOOK_A_CALL_URL for a real
- * scheduling link (Cal.com/Calendly) once one is chosen.
+ *
+ * BOOK_A_CALL_URL is the Calendly event link (set `NEXT_PUBLIC_CALENDLY_URL`,
+ * e.g. https://calendly.com/<you>/intro-call). Falls back to the contact form
+ * until it is set. The "book at least 1 day ahead" rule is Calendly's
+ * "Minimum scheduling notice = 1 day" setting on the event type.
  */
-export const BOOK_A_CALL_URL = '/work#contact';
+export const BOOK_A_CALL_URL = process.env.NEXT_PUBLIC_CALENDLY_URL || '/work#contact';
 
 /**
  * TODO(docs/SEO-GEO-AEO.md#open-decisions): set `NEXT_PUBLIC_SITE_URL` once a
@@ -11,14 +14,9 @@ export const BOOK_A_CALL_URL = '/work#contact';
  */
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
-/**
- * Social links (Sheet 07 contact section). Left unset on purpose — the real
- * GitHub/LinkedIn URLs and public contact email are an open question (see
- * docs/GOALS.md#open-questions and docs/SEO-GEO-AEO.md#open-decisions), and
- * none should be invented or filled with the operator's private account email.
- */
+/** Public contact points (Sheet 07 contact section, WebSite JSON-LD `sameAs`). */
 export const SOCIAL_LINKS = {
-  github: undefined as string | undefined,
-  linkedin: undefined as string | undefined,
-  email: undefined as string | undefined,
+  linkedin: 'https://www.linkedin.com/in/jovanni-jungco/',
+  instagram: 'https://www.instagram.com/ivann.jov.07/',
+  email: 'jovannijungco27@gmail.com',
 };

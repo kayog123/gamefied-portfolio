@@ -49,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
       <body className="min-h-dvh bg-navy font-sans text-text antialiased">
