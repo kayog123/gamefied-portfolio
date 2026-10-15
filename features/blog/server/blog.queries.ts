@@ -1,7 +1,9 @@
 import 'server-only';
 import { groq } from 'next-sanity';
 
-const PUBLISHED = `_type == "post" && defined(slug.current) && publishedAt <= now()`;
+// `dateTime()` matters: Studio stores publishedAt with the editor's UTC offset (e.g. +08:00), and a plain
+// string compare against now() (which ends in "Z") would hide posts for hours after their real publish time.
+const PUBLISHED = `_type == "post" && defined(slug.current) && dateTime(publishedAt) <= dateTime(now())`;
 
 const IMAGE = `{
   "url": asset->url,
