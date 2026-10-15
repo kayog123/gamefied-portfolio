@@ -14,7 +14,26 @@ export function faqPageSchema(items: FaqItem[]) {
   };
 }
 
-type BlogPostLike = { slug: string; title: string; excerpt: string; publishedAt: string };
+/** Name shown in search results next to the favicon (Google "site name"). */
+export const SITE_NAME = 'Jovanni Jungco | Fullstack Engineer';
+
+/** `WebSite` for the home page: tells Google the site name instead of falling back to the bare domain. */
+export function websiteSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    alternateName: ['Jovanni Jungco', 'Jungco Dev'],
+    url: `${SITE_URL}/`,
+  };
+}
+
+type BlogPostLike = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  publishedAt: string;
+};
 
 /** `Blog` for `/blog`: lists the posts that are visibly on the page. */
 export function blogSchema(posts: BlogPostLike[]) {
@@ -57,7 +76,12 @@ export function blogPostSchema(post: BlogPostLike & { updatedAt?: string; image?
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Blog', item: `${SITE_URL}/blog` },
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Blog',
+            item: `${SITE_URL}/blog`,
+          },
           { '@type': 'ListItem', position: 2, name: post.title, item: url },
         ],
       },

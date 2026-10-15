@@ -3,6 +3,8 @@ import { Suspense } from 'react';
 import { Analytics } from "@vercel/analytics/next"
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import { CustomCursor } from '@/components/custom-cursor';
+import { JsonLd } from '@/components/seo/json-ld';
+import { SITE_NAME, websiteSchema } from '@/lib/seo/schema';
 import { SITE_URL } from '@/lib/site';
 import './globals.css';
 
@@ -29,6 +31,8 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
+  openGraph: { siteName: SITE_NAME, type: 'website' },
   title: {
     default: 'Jovanni Jungco — Full-stack & AI Engineer · Your idea → Live product',
     template: '%s · Jovanni Jungco — Full-stack & AI Engineer',
@@ -47,6 +51,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
       <body className="min-h-dvh bg-navy font-sans text-text antialiased">
+        <JsonLd data={websiteSchema()} />
         {children}
         <Suspense fallback={null}>
           <CustomCursor />
