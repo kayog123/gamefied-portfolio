@@ -34,6 +34,9 @@ export const metadata: Metadata = {
   },
   description:
     'I build products end to end: web and mobile apps, AI agents, payments, maps and automation. Type your idea and watch it become a blueprint.',
+  verification: {
+    google: '-ilLaR2qW_jFkJMGoL6iTuJi6-lGwUlrbAP1-PVN-xo',
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
