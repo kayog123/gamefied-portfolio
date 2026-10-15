@@ -12,12 +12,15 @@ const NAV_LINKS = [
   { href: '/work#skills', label: 'Skills' },
   { href: '/work#experience', label: 'Experience' },
   { href: '/process', label: 'Process' },
+  { href: '/blog', label: 'Blog' },
   { href: '/work#contact', label: 'Contact' },
 ];
 
 export type SiteTopBarProps = {
   /** "work" shows the section nav; "case-study" swaps the left slot for "← All work". */
   variant?: 'work' | 'case-study';
+  /** Where the "back" link of the case-study variant goes. Defaults to "← All work". */
+  back?: { href: string; label: string };
   className?: string;
 };
 
@@ -25,16 +28,16 @@ export type SiteTopBarProps = {
  * The top bar for the static content pages (Sheets 07–08) — distinct from
  * the game's `GameTopBar` (docs/design-system/03-layout-and-patterns.md#top-bar).
  */
-export function SiteTopBar({ variant = 'work', className }: SiteTopBarProps) {
+export function SiteTopBar({ variant = 'work', back = { href: '/work', label: 'All work' }, className }: SiteTopBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className={cn('relative z-40 border-b border-grid bg-navy/85', className)}>
       <div className="mx-auto flex h-14 w-full max-w-page items-center justify-between px-4 md:h-16 md:px-12">
         {variant === 'case-study' ? (
-          <Link href="/work" className="focus-blueprint flex items-center">
+          <Link href={back.href} className="focus-blueprint flex items-center">
             <ArrowLeft className="size-5 text-text-soft md:hidden" aria-hidden />
-            <span className="hidden font-sans text-sm text-text-soft md:inline">← All work</span>
+            <span className="hidden font-sans text-sm text-text-soft md:inline">← {back.label}</span>
           </Link>
         ) : (
           <Logo />

@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
@@ -16,7 +17,9 @@ const TEXT_FIELD = 'input:not([type="button"]):not([type="submit"]):not([type="c
 export function CustomCursor() {
   const finePointer = useMediaQuery('(hover: hover) and (pointer: fine)');
   const reducedMotion = useReducedMotion();
-  const enabled = finePointer && !reducedMotion;
+  // The Sanity Studio (/studio) is a tool, not part of the show: keep its native cursor.
+  const inStudio = usePathname().startsWith('/studio');
+  const enabled = finePointer && !reducedMotion && !inStudio;
 
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);

@@ -30,11 +30,16 @@ fullstack-portfolio/
 │  │  ├─ layout.tsx              # Site top bar + footer
 │  │  ├─ process/
 │  │  │  └─ page.tsx             # "/process"  (client process, discovery call → delivery, + FAQ)
+│  │  ├─ blog/
+│  │  │  ├─ page.tsx             # "/blog"          (post index, Sanity-powered)
+│  │  │  └─ [slug]/page.tsx      # "/blog/<slug>"   (one post)
 │  │  └─ work/
 │  │     ├─ page.tsx             # "/work"         (07 See My Work)
 │  │     └─ [slug]/
 │  │        └─ page.tsx          # "/work/coda-compliance-tool"  (08 Case study)
+│  ├─ studio/[[...tool]]/        # Embedded Sanity Studio ("/studio"), reads ../sanity.config.ts
 │  ├─ api/
+│  │  ├─ revalidate/route.ts     # Sanity webhook → revalidateTag("blog")
 │  │  └─ blueprint/
 │  │     └─ route.ts             # POST idea → structured blueprint (server-only AI call)
 │  ├─ components/                # Dev-only UI kit preview (Sheet 00), excluded from prod
@@ -59,6 +64,7 @@ fullstack-portfolio/
 │  │  ├─ hooks/ (use-blueprint-generation.ts)
 │  │  ├─ server/ (generate-blueprint.ts, prompt.ts, fallback.ts)   # server-only
 │  │  └─ index.ts
+│  ├─ blog/                      # Blog: components/, server/ (Sanity reads), studio/ (schemas, imported only by sanity.config.ts)
 │  ├─ city/                      # Shared isometric City scene (all modes)
 │  │  ├─ components/ (city-scene.tsx, building.tsx, building-label.tsx)
 │  │  ├─ city.constants.ts       # Building layout, hues, scenery

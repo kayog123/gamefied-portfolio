@@ -59,6 +59,17 @@ Fonts (Space Grotesk, Inter, JetBrains Mono) come from the **built-in `next/font
 | `zod` | dep | Validates the AI's structured blueprint output (features, stack, matching case studies) and form input (email, consent) on both server and client. Gives us typed results |
 | AI SDK (see [Open decisions](#open-decisions)) | dep | Server-only call for idea → blueprint. Likely `@anthropic-ai/sdk`, since Claude is already in the showcased stack |
 
+### Blog (Sanity CMS)
+
+| Package | Type | Why |
+|---------|------|-----|
+| `next-sanity` | dep | Sanity client for Server Components, `PortableText` renderer, and the embedded Studio at `/studio`. Server-only reads in `features/blog/server/` |
+| `sanity` | dep | The Studio itself plus schema helpers (`defineType`, `defineField`). Loaded only on the `/studio` route, never on `(site)` pages |
+| `styled-components` | dep | Required peer dependency of the Sanity Studio. Used by the Studio only, never by our own UI (we still style with Tailwind) |
+| `@sanity/image-url` | dep | Builds responsive cover/inline image URLs from Sanity image references |
+
+Env vars (names in `.env.example`): `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, `SANITY_REVALIDATE_SECRET` (webhook → `/api/revalidate`).
+
 ### Lead capture (M6: Launch and brief)
 
 | Package | Type | Why |

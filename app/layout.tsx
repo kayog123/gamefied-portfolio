@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { Analytics } from "@vercel/analytics/next"
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import { CustomCursor } from '@/components/custom-cursor';
@@ -47,7 +48,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     >
       <body className="min-h-dvh bg-navy font-sans text-text antialiased">
         {children}
-        <CustomCursor />
+        <Suspense fallback={null}>
+          <CustomCursor />
+        </Suspense>
         <Analytics/>
       </body>
     </html>
