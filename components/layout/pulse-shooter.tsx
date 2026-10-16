@@ -9,12 +9,13 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { BUG_HIT_RADIUS, BUG_KILL_EVENT, SCORE_BUG } from './bug-crawler';
 
 type Burst = {
   id: number;
   x: number;
   y: number;
-  kind: 'miss' | 'hit' | 'head';
+  kind: 'miss' | 'hit' | 'head' | 'bug';
 };
 
 /** Extra px around a streak that still counts as a hit, so thin 2px lines stay shootable. */
@@ -42,6 +43,24 @@ export function PulseShooter() {
     if (e.button !== 0) return;
     if (e.target instanceof Element && e.target.closest('[data-shooter-ui]')) return;
     const { clientX: x, clientY: y } = e;
+
+    // Bugs sit on top of the grid, so they win over the pulses beneath them.
+    for (const bug of document.querySelectorAll<HTMLElement>('[data-bug]:not([data-dying])')) {
+      const r = bug.getBoundingClientRect();
+      if (Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2)) > BUG_HIT_RADIUS) {
+        continue;
+      }
+      bug.setAttribute('data-dying', '');
+      window.dispatchEvent(
+        new CustomEvent(BUG_KILL_EVENT, { detail: { id: Number(bug.dataset.bugId) } }),
+      );
+      setScore((s) => s + SCORE_BUG);
+      setShowHelp(false);
+      const id = nextId.current++;
+      setBursts((list) => [...list.slice(-8), { id, x, y, kind: 'bug' }]);
+      window.setTimeout(() => setBursts((list) => list.filter((b) => b.id !== id)), 800);
+      return;
+    }
 
     let best: 'hit' | 'head' | null = null;
     let target: HTMLElement | null = null;
@@ -168,7 +187,11 @@ export function PulseShooter() {
             <span className="shot-burst-ring" />
             {b.kind !== 'miss' && (
               <span className="shot-burst-pop">
-                {b.kind === 'head' ? `HEAD +${SCORE_HEAD}` : `+${SCORE_HIT}`}
+                {b.kind === 'bug'
+                  ? `BUG +${SCORE_BUG}`
+                  : b.kind === 'head'
+                    ? `HEAD +${SCORE_HEAD}`
+                    : `+${SCORE_HIT}`}
               </span>
             )}
           </span>
@@ -218,7 +241,10 @@ export function PulseShooter() {
                 Hit a line: <span className="text-glow-pale">+{SCORE_HIT}</span>. Hit its glowing
                 head: <span className="text-cta-hover">+{SCORE_HEAD}</span>.
               </li>
-              <li>Shot lines come back on their next run. Optional, just for fun.</li>
+              <li>
+                Squash a crawling bug: <span className="text-danger-text">+{SCORE_BUG}</span>.
+              </li>
+              <li>Shot lines and bugs come back. Optional, just for fun.</li>
             </ul>
             <button
               type="button"

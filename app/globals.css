@@ -404,6 +404,55 @@
   visibility: hidden;
 }
 
+/* Crawling bugs (components/layout/bug-crawler.tsx): legs skitter, squash when shot. */
+.bug-body {
+  filter: drop-shadow(0 0 6px rgb(248 113 113 / 0.45));
+}
+.bug-legs-a,
+.bug-legs-b {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bug-skitter 160ms ease-in-out infinite alternate;
+}
+.bug-legs-b {
+  animation-direction: alternate-reverse;
+}
+[data-bug][data-dying] .bug-body {
+  animation: bug-splat 450ms var(--ease-blueprint) forwards;
+}
+@keyframes bug-skitter {
+  from {
+    transform: rotate(-9deg);
+  }
+  to {
+    transform: rotate(9deg);
+  }
+}
+@keyframes bug-splat {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  35% {
+    transform: scale(1.35, 0.7);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.6, 0.2);
+    opacity: 0;
+  }
+}
+.shot-burst[data-kind='bug'] .shot-burst-ring {
+  border-color: var(--color-danger-text);
+  box-shadow: 0 0 20px rgb(248 113 113 / 0.8);
+  animation-duration: 650ms;
+  --ping-scale: 5;
+}
+.shot-burst[data-kind='bug'] .shot-burst-pop {
+  color: var(--color-danger-text);
+  text-shadow: 0 0 10px rgb(248 113 113 / 0.8);
+}
+
 /* <PulseShooter> feedback: a ping at the click point and a floating score label on hits. */
 .shot-burst {
   position: absolute;
