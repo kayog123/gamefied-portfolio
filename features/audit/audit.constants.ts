@@ -17,3 +17,10 @@ export const MAX_HTML_BYTES = 500 * 1024;
 export const SLOW_RESPONSE_MS = 800;
 export const CERT_EXPIRY_WARNING_DAYS = 14;
 export const HSTS_MIN_MAX_AGE = 60 * 60 * 24 * 180;
+
+// Lead capture (Phase 3, docs/AUDIT.md#links)
+export const REVIEW_LINK_TTL_SECONDS = 7 * 24 * 60 * 60;
+export const SCAN_TICKET_TTL_SECONDS = 15 * 60;
+
+/** Public Cloudflare Turnstile site key. Unset means no widget (fine in development; production fails closed on the server). */
+export const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;

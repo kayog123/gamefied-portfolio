@@ -1,8 +1,11 @@
-import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/blueprint';
-import { SOCIAL_LINKS } from '@/lib/site';
+'use client';
 
-export type FullAuditPanelProps = { domain: string; lockedCount: number; hasCritical: boolean };
+import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/blueprint';
+import { RequestDialog } from './request-dialog';
+
+export type FullAuditPanelProps = { url: string; domain: string; lockedCount: number; hasCritical: boolean };
 
 const BENEFITS = [
   'The cause and exact fix for every locked finding',
@@ -11,12 +14,9 @@ const BENEFITS = [
   'Reviewed by me before it reaches you',
 ];
 
-/**
- * The upsell: what the full audit adds and the one request button.
- * TODO(docs/AUDIT.md#phases): Phase 3 replaces this mailto with the request form + review flow.
- */
-export function FullAuditPanel({ domain, lockedCount, hasCritical }: FullAuditPanelProps) {
-  const requestHref = `mailto:${SOCIAL_LINKS.email}?subject=${encodeURIComponent(`Full audit request: ${domain}`)}`;
+/** The upsell: what the full audit adds, and the button that opens the request form. */
+export function FullAuditPanel({ url, domain, lockedCount, hasCritical }: FullAuditPanelProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const heading =
     lockedCount === 0
       ? 'Want a deeper look?'
@@ -36,12 +36,19 @@ export function FullAuditPanel({ domain, lockedCount, hasCritical }: FullAuditPa
           </li>
         ))}
       </ul>
-      <Button href={requestHref} size="lg" className="mt-1" iconRight={<ArrowRight className="size-[18px]" aria-hidden />}>
+      <Button
+        size="lg"
+        className="mt-1"
+        onClick={() => setIsDialogOpen(true)}
+        aria-haspopup="dialog"
+        iconRight={<ArrowRight className="size-[18px]" aria-hidden />}
+      >
         Get the full audit
       </Button>
       <p className="font-sans text-xs leading-[1.5] text-muted">
         Free. I reply within [X business days]. Your email is used only for this audit. No newsletters.
       </p>
+      <RequestDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} url={url} domain={domain} />
     </aside>
   );
 }

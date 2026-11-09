@@ -29,7 +29,8 @@ fullstack-portfolio/
 │  ├─ (site)/                    # Route group: static, scrollable pages
 │  │  ├─ layout.tsx              # Site top bar + footer
 │  │  ├─ audit/
-│  │  │  └─ page.tsx             # "/audit"  (09 Website audit: free scan + results)
+│  │  │  ├─ page.tsx             # "/audit"  (09 Website audit: free scan + results)
+│  │  │  └─ review/[requestId]/page.tsx   # private, noindex, signed link (Jovanni only)
 │  │  ├─ process/
 │  │  │  └─ page.tsx             # "/process"  (client process, discovery call → delivery, + FAQ)
 │  │  ├─ blog/
@@ -40,9 +41,10 @@ fullstack-portfolio/
 │  │     └─ [slug]/
 │  │        └─ page.tsx          # "/work/coda-compliance-tool"  (08 Case study)
 │  ├─ studio/[[...tool]]/        # Embedded Sanity Studio ("/studio"), reads ../sanity.config.ts
+│  ├─ studio/audits/[[...tool]]/ # Studio for the private audit-requests dataset ("/studio/audits"), reads ../sanity.audits.config.ts
 │  ├─ api/
 │  │  ├─ revalidate/route.ts     # Sanity webhook → revalidateTag("blog")
-│  │  ├─ audit/preview/route.ts  # POST url → free website-audit preview (docs/AUDIT.md)
+│  │  ├─ audit/{preview,performance,request}/route.ts   # free scan · PageSpeed · "Get the full audit" (docs/AUDIT.md)
 │  │  └─ blueprint/
 │  │     └─ route.ts             # POST idea → structured blueprint (server-only AI call)
 │  ├─ components/                # Dev-only UI kit preview (Sheet 00), excluded from prod
@@ -289,7 +291,8 @@ Write a custom hook when **stateful or effectful logic** is:
 | `useTypewriter(text, opts)` | `spark` | Types a preset into the idea input, then calls `onDone` |
 | `useRotatingTypewriter({ lines, paused })` | `spark` | Types, holds, erases and cycles the Sheet 01 headline questions (`content/spark-questions.ts`); frozen on the full line when paused or reduced motion |
 | `useBlueprintGeneration()` | `generating` | Calls `/api/blueprint`, streams log lines and progress, falls back to the closest preset on error |
-| `useAuditScan()` | `audit` | Runs `/api/audit/preview`; returns scan state, an estimated progress and `scan`/`reset` |
+| `useAuditScan()` | `audit` | Runs `/api/audit/preview` then `/api/audit/performance`; returns scan state, performance state, an estimated progress and `scan`/`reset` |
+| `useTurnstile({ enabled })` | `audit` | Cloudflare Turnstile with no package: loads the script, renders an `interaction-only` widget, exposes the single-use token and `reset` |
 | `useGame()` | `game` | Reads game state and dispatch from `GameProvider` |
 | `useBuildProgress()` | `game` | Derived values: `percent`, `liveCount`, segment statuses, collected shards |
 | `useLinkedHover()` | `hud` / `city` | Two-way hover/focus between list rows and buildings |

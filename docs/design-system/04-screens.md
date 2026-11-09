@@ -218,7 +218,11 @@ The progress bar in the top bar updates, with the new percent in green.
 
 **Performance card:** the 4th score card, `PERFORMANCE · MOBILE`. It appears with the results in a dashed "Measuring with PageSpeed. Usually 10–30 s." state and fills in when Google answers: score, bar, and `LCP · CLS · TBT` in mono. Scores under 90 add "What is slowing it down is part of the full audit." If PageSpeed is unavailable it says so and the rest of the page is unaffected. Grid: 1 column on phones, 2 from `sm`, 4 from `xl`.
 
-**Not built yet:** the request modal, the shared-link page and its share image.
+**Request dialog (09d):** a native `<dialog>` (focus trap, Esc, focus return for free). Name, email, optional focus textarea, a pre-checked consent box ("Email me about this audit only. No newsletters."), an `interaction-only` Turnstile widget, Cancel (ghost, `type="button"`) and "Request full audit" (primary). Sent state: "Request received", three next steps, and a "Book a 30-minute call" link. Errors are announced (`role="alert"`) and always include the contact email.
+
+**Review page (Jovanni only, not a visitor screen):** `/audit/review/…`, noindex. Who, their free-scan scores and counts, and "Reply by email" / "Mark contacted" / "Decline". Uses neutral mono labels for status; blue / amber / green stay reserved for build status.
+
+**Not built yet:** the shared-link page and its share image.
 
 ---
 

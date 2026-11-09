@@ -6,17 +6,20 @@ import { Button } from '@/components/blueprint';
 import { cn } from '@/lib/cn';
 import { normalizeAuditUrl } from '../audit.utils';
 import { useAuditScan } from '../hooks/use-audit-scan';
+import { useTurnstile } from '../hooks/use-turnstile';
 import { AuditProgress } from './audit-progress';
 import { AuditResults } from './audit-results';
 
 /** The interactive part of `/audit`: URL form, scanning state and results. Everything else is server-rendered. */
 export function AuditScanner() {
   const { state, performance, progress, scan } = useAuditScan();
+  const { containerRef, token, isRequired, hasError, reset: resetHumanCheck } = useTurnstile();
   const [url, setUrl] = useState('');
   const [inputError, setInputError] = useState<string | null>(null);
 
   const isScanning = state.status === 'scanning';
   const isDone = state.status === 'done';
+  const isHumanCheckPending = isRequired && token === null;
   const error = inputError ?? (state.status === 'error' ? state.message : null);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -26,8 +29,11 @@ export function AuditScanner() {
       setInputError('That doesn’t look like a website address. Try something like example.com.');
       return;
     }
+    if (isHumanCheckPending) return;
     setInputError(null);
-    void scan(url);
+    void scan(url, token ?? undefined);
+    // Cloudflare tokens work once, so fetch a fresh one for the next scan.
+    resetHumanCheck();
   }
 
   return (
@@ -64,14 +70,18 @@ export function AuditScanner() {
           <Button
             type="submit"
             size="lg"
-            disabled={isScanning}
+            disabled={isScanning || isHumanCheckPending}
             variant={isDone ? 'secondary' : 'primary'}
             className="h-14 justify-center"
             iconRight={isDone ? <RotateCw className="size-4" aria-hidden /> : isScanning ? undefined : <ArrowRight className="size-[18px]" aria-hidden />}
           >
-            {isScanning ? 'Auditing…' : isDone ? 'Audit again' : 'Run free audit'}
+            {isScanning ? 'Auditing…' : isHumanCheckPending && !hasError ? 'Checking…' : isDone ? 'Audit again' : 'Run free audit'}
           </Button>
         </div>
+        <div ref={containerRef} />
+        {hasError && (
+          <p className="font-sans text-sm text-danger-text">The human check didn&apos;t load. Reload the page and try again.</p>
+        )}
         {error ? (
           <p id="audit-url-error" role="alert" className="font-sans text-sm text-danger-text">
             {error}

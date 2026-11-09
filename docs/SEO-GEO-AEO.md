@@ -18,6 +18,8 @@ The home page (`/`) is an interactive game. A crawler or AI model fetching it ge
 | `/work` (07 See My Work) | **Primary entity page.** Who I am, what I build, skills, experience, 6 projects. Where most rankings and AI citations should land | ✅ |
 | `/process` | **Client-process page.** How a project runs, discovery call to delivery, plus FAQ. Targets "how does a freelance developer work" queries and AI answers | ✅ |
 | `/work/[slug]` (08 Case study) | **Primary content pages.** Long-tail queries ("NestJS BullMQ pgvector compliance tool"), proof that gets cited | ✅ |
+| `/audit` | Free website audit (Sheet 09). Server-renders its H1, lead and "what we check"; the scanner is a client leaf | ✅ |
+| `/audit/review/*`, `/audit/report/*`, `/audit/s/*` | Private, signed links (review, full report, shared audit) | ❌ `noindex` + disallowed in `robots.txt` |
 | `/api/*` | Endpoints | ❌ disallow |
 | `/components` (UI kit preview) | Dev only | ❌ `noindex` (and excluded from prod) |
 | Visitor-generated blueprints | Ephemeral client state with no URLs | — (never create indexable URLs for them) |

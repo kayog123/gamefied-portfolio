@@ -19,7 +19,8 @@ export type UseAuditScanResult = {
   performance: PerformanceState;
   /** 0–95 while scanning: an estimate from elapsed time (the API reports no intermediate progress). */
   progress: number;
-  scan: (url: string) => Promise<void>;
+  /** `turnstileToken` is the visitor’s single-use bot-check token (omitted when Turnstile isn’t configured). */
+  scan: (url: string, turnstileToken?: string) => Promise<void>;
   reset: () => void;
 };
 
@@ -50,13 +51,13 @@ export function useAuditScan(): UseAuditScanResult {
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
-  const measurePerformance = useCallback(async (url: string, controller: AbortController) => {
+  const measurePerformance = useCallback(async (url: string, ticket: string, controller: AbortController) => {
     setPerformance({ status: 'loading' });
     try {
       const response = await fetch('/api/audit/performance', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, ticket }),
         signal: AbortSignal.any([controller.signal, AbortSignal.timeout(PERFORMANCE_TIMEOUT_MS)]),
       });
       const body = (await response.json().catch(() => null)) as { performance?: PerformanceResult } | null;
@@ -69,7 +70,7 @@ export function useAuditScan(): UseAuditScanResult {
   }, []);
 
   const scan = useCallback(
-    async (url: string) => {
+    async (url: string, turnstileToken?: string) => {
       abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
@@ -81,10 +82,10 @@ export function useAuditScan(): UseAuditScanResult {
         const response = await fetch('/api/audit/preview', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ url }),
+          body: JSON.stringify({ url, turnstileToken }),
           signal: AbortSignal.any([controller.signal, AbortSignal.timeout(CLIENT_TIMEOUT_MS)]),
         });
-        const body = (await response.json().catch(() => null)) as { preview?: AuditPreview; error?: string } | null;
+        const body = (await response.json().catch(() => null)) as { preview?: AuditPreview; ticket?: string; error?: string } | null;
         if (controller.signal.aborted) return;
 
         if (!response.ok || !body?.preview) {
@@ -93,7 +94,8 @@ export function useAuditScan(): UseAuditScanResult {
         }
         setProgress(100);
         setState({ status: 'done', preview: body.preview });
-        void measurePerformance(body.preview.finalUrl, controller);
+        if (body.ticket) void measurePerformance(body.preview.finalUrl, body.ticket, controller);
+        else setPerformance({ status: 'unavailable' });
       } catch {
         if (controller.signal.aborted) return;
         setState({ status: 'error', url, message: 'The audit took too long or couldn’t be reached. Please try again.' });

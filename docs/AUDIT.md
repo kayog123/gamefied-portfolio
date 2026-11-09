@@ -75,7 +75,7 @@ A shared link emails Jovanni the first time it's opened ("lead opened your audit
 
 ## Env
 
-`XAI_API_KEY`, `XAI_MODEL`, `PAGESPEED_API_KEY` (required in practice: without a key Google answers 429), `SANITY_AUDIT_DATASET`, `SANITY_AUDIT_TOKEN`, `AUDIT_SIGNING_SECRET`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`.
+`XAI_API_KEY`, `XAI_MODEL`, `PAGESPEED_API_KEY` (required in practice: without a key Google answers 429), `NEXT_PUBLIC_SANITY_AUDIT_DATASET` (default `audits`), `SANITY_AUDIT_TOKEN`, `AUDIT_SIGNING_SECRET`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`.
 
 ## Performance (PageSpeed)
 
@@ -84,6 +84,16 @@ A shared link emails Jovanni the first time it's opened ("lead opened your audit
 - Cached about a day per URL; failures (quota, timeout, unscorable page) for seconds, and the card then says "Couldn’t measure speed right now" without affecting the rest of the audit.
 - Google fetches the page itself, so nothing reaches our network, but the URL is still checked as public to avoid spending quota on junk.
 - The summary ("What this means for you") does not use the performance score yet.
+
+## Lead capture (Phase 3)
+
+- **Bot check:** Cloudflare Turnstile (no package: script tag + `fetch` verification) on the scan form and the request dialog, in `interaction-only` mode. Server side, no secret in development skips the check; **in production a missing secret fails closed** (503).
+- **Scan ticket:** `/api/audit/preview` verifies Turnstile once, then returns an HMAC ticket bound to the final URL (15 min). `/api/audit/performance` requires it, so the slow speed test needs no second token and can't be hit directly.
+- **`POST /api/audit/request`:** validate (zod) → Turnstile → duplicate check (same email + domain still `pending` is acknowledged without a second email) → our own re-scan for scores and counts (8 s budget, never trusted from the browser) → save as `pending` → email Jovanni a signed review link. Each step degrades instead of failing the visitor: no store configured → email only; stored but email failed → still a success; neither → 502/503 with the contact email.
+- **Review page `/audit/review/[requestId]?token=…`:** noindex, 404 for anything that isn't a valid signed link (7 days). Opening it only displays; "Mark contacted" and "Decline" are Server Actions that verify the token again. "Run full audit" arrives with Phase 4.
+- **Studio:** a second embedded Studio at `/studio/audits` for the private dataset; the blog Studio at `/studio` is untouched.
+- **Signing:** `AUDIT_SIGNING_SECRET` (16+ chars). Tokens are `<expiry>.<HMAC-SHA256>` over purpose + value + expiry, so a scan ticket can't be replayed as a review link. In production a missing secret fails closed.
+- **To go live:** create a **private** dataset named `audits` in the Sanity project, create a token with write access to it, set the env vars below, and set a Vercel Firewall rate-limit rule on `/api/audit/*`.
 
 ## Abuse limits
 
@@ -100,7 +110,7 @@ A shared link emails Jovanni the first time it's opened ("lead opened your audit
 | 2 | PageSpeed Insights: `POST /api/audit/performance`, 4th "Performance · mobile" card that fills in after the other results | ✅ Built; needs `PAGESPEED_API_KEY` for a live run (not yet verified end to end) |
 | — | **Design:** Sheet 09 · Audit (canvas), documented in `design-system/04-screens.md` | ✅ Done |
 | 2b | `/audit` page: URL form, scanning state, results, "What this means for you", findings list, full-audit panel (mailto and Calendly for now) | ✅ Built; not yet checked in a browser |
-| 3 | Lead capture: Turnstile, private dataset, request form, review page, emails | — |
+| 3 | Lead capture: Turnstile on scan + request, private `audits` dataset, request dialog, signed review page, emails | ✅ Built; not yet run against real Sanity/Turnstile/Resend keys |
 | 3b | Shareable snapshots, OG score card, view tracking, first-open email | — |
 | 4 | Full audit: Grok, report page, delivery email | — |
 | 5 | Polish: rate-limit rule, a11y, reduced motion, doc updates | — |

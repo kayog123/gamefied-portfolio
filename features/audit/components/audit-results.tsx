@@ -52,7 +52,7 @@ export function AuditResults({ preview, performance }: AuditResultsProps) {
           <FindingsList findings={preview.findings} passedCount={passedCount} />
         </div>
         <div className="w-full lg:w-[380px] lg:shrink-0">
-          <FullAuditPanel domain={domain} lockedCount={lockedCount} hasCritical={hasCritical} />
+          <FullAuditPanel url={preview.finalUrl} domain={domain} lockedCount={lockedCount} hasCritical={hasCritical} />
         </div>
       </div>
     </div>
