@@ -28,6 +28,11 @@ fullstack-portfolio/
 │  │  └─ page.tsx                # "/"  →  Spark → Generating → HUD → … → Launch
 │  ├─ (site)/                    # Route group: static, scrollable pages
 │  │  ├─ layout.tsx              # Site top bar + footer
+│  │  ├─ audit/
+│  │  │  ├─ page.tsx             # "/audit"  (09 Website audit: free scan + results)
+│  │  │  ├─ review/[requestId]/page.tsx   # private, noindex, signed link (Jovanni only): run / send the full audit
+│  │  │  ├─ report/[requestId]/page.tsx   # private, noindex, signed link: the full report the requester reads
+│  │  │  └─ s/[shareId]/{page,opengraph-image}.tsx   # shared audit snapshot (noindex) + its link-preview image
 │  │  ├─ process/
 │  │  │  └─ page.tsx             # "/process"  (client process, discovery call → delivery, + FAQ)
 │  │  ├─ blog/
@@ -38,8 +43,10 @@ fullstack-portfolio/
 │  │     └─ [slug]/
 │  │        └─ page.tsx          # "/work/coda-compliance-tool"  (08 Case study)
 │  ├─ studio/[[...tool]]/        # Embedded Sanity Studio ("/studio"), reads ../sanity.config.ts
+│  ├─ studio/audits/[[...tool]]/ # Studio for the private audits dataset: requests and shared audits ("/studio/audits"), reads ../sanity.audits.config.ts
 │  ├─ api/
 │  │  ├─ revalidate/route.ts     # Sanity webhook → revalidateTag("blog")
+│  │  ├─ audit/{preview,performance,request}/route.ts   # free scan · PageSpeed · "Get the full audit" (docs/AUDIT.md)
 │  │  └─ blueprint/
 │  │     └─ route.ts             # POST idea → structured blueprint (server-only AI call)
 │  ├─ components/                # Dev-only UI kit preview (Sheet 00), excluded from prod
@@ -64,6 +71,7 @@ fullstack-portfolio/
 │  │  ├─ hooks/ (use-blueprint-generation.ts)
 │  │  ├─ server/ (generate-blueprint.ts, prompt.ts, fallback.ts)   # server-only
 │  │  └─ index.ts
+│  ├─ audit/                     # Website audit (full report: server/full-audit.ts, build-report.ts, full-audit-prompt.ts; components/full-report.tsx) (docs/AUDIT.md): components/ (scanner, results, findings), hooks/use-audit-scan.ts, server/ (SSRF-safe fetch, checks/, run-audit.ts), audit.utils.ts (scoring, toPreview), audit.summary.ts
 │  ├─ blog/                      # Blog: components/, server/ (Sanity reads), studio/ (schemas, imported only by sanity.config.ts)
 │  ├─ city/                      # Shared isometric City scene (all modes)
 │  │  ├─ components/ (city-scene.tsx, building.tsx, building-label.tsx)
@@ -121,10 +129,13 @@ fullstack-portfolio/
 │  ├─ skills.ts
 │  ├─ experience.ts
 │  ├─ presets.ts                 # 5 idea presets + their fallback blueprints
+│  ├─ audit-checks.ts            # Website-audit check catalog (server-only: locked fix copy)
+│  ├─ audit-page.ts              # /audit copy: hero, category blurbs, plain-English summary cards
 │  └─ spark-questions.ts         # Rotating Sheet 01 headline questions
 │
 ├─ types/                        # Global/shared types (domain models)
-│  └─ blueprint.ts               # Feature, Building, BuildStatus, Blueprint, Shard…
+│  ├─ blueprint.ts               # Feature, Building, BuildStatus, Blueprint, Shard…
+│  └─ audit.ts                   # AuditCheck, Finding, AuditResult, AuditPreview…
 │
 ├─ public/                       # Static assets (images, OG fallbacks, résumé PDF)
 ├─ docs/                         # Goals, design system, this file
@@ -282,6 +293,8 @@ Write a custom hook when **stateful or effectful logic** is:
 | `useTypewriter(text, opts)` | `spark` | Types a preset into the idea input, then calls `onDone` |
 | `useRotatingTypewriter({ lines, paused })` | `spark` | Types, holds, erases and cycles the Sheet 01 headline questions (`content/spark-questions.ts`); frozen on the full line when paused or reduced motion |
 | `useBlueprintGeneration()` | `generating` | Calls `/api/blueprint`, streams log lines and progress, falls back to the closest preset on error |
+| `useAuditScan()` | `audit` | Runs `/api/audit/preview` then `/api/audit/performance`; returns scan state, performance state, an estimated progress and `scan`/`reset` |
+| `useTurnstile({ enabled })` | `audit` | Cloudflare Turnstile with no package: loads the script, renders an `interaction-only` widget, exposes the single-use token and `reset` |
 | `useGame()` | `game` | Reads game state and dispatch from `GameProvider` |
 | `useBuildProgress()` | `game` | Derived values: `percent`, `liveCount`, segment statuses, collected shards |
 | `useLinkedHover()` | `hud` / `city` | Two-way hover/focus between list rows and buildings |

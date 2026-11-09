@@ -33,6 +33,8 @@ What we depend on, why, and the rules for adding anything new. Related docs: [Go
 | `tailwindcss` (v4) | Styling. Tokens live in `@theme` (see `docs/design-system/tokens.css`) |
 | `@tailwindcss/turbopack` | Turbopack loader for Tailwind v4 CSS |
 | `eslint`, `eslint-config-next` | Linting (`core-web-vitals` + `typescript` presets) |
+| `groq-js` (not declared) | Used only by `audit-queries.test.ts` to run the audit store's GROQ against fake documents. It ships inside `sanity`, so it is a transitive dependency, and the test skips itself if it is missing. Declare it explicitly if that test becomes a hard requirement |
+| `vitest` (4.x) | Unit tests (`npm test`, config in `vitest.config.mts`, Node environment). Pinned to 4.x because Vitest 5 requires `@types/node` ≥ 22 and we're on 20. `server-only` is aliased to its empty stub so server modules can be tested |
 
 ---
 
@@ -157,5 +159,6 @@ These match the open questions in [GOALS.md](./GOALS.md#open-questions). When on
 | AI provider (idea → blueprint) | `@anthropic-ai/sdk`, Vercel `ai` SDK | `@anthropic-ai/sdk`: matches the showcased stack, structured output validated with `zod`. Until chosen, `app/api/blueprint` and `app/api/brief` validate and respond honestly without calling out to a real provider — see the `TODO` comments in `features/generating/server/generate-blueprint.ts` and `app/api/brief/route.ts` |
 | Email delivery | `resend` (+ `@react-email/components`), Postmark, Nodemailer + SMTP | **`resend` is in use for `/api/contact`** (`lib/email/send-contact-email.ts`, plain-text, `Reply-To` = visitor; env `RESEND_API_KEY`, optional `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`). `/api/brief` still validates and acknowledges only; reuse the same helper when it is wired |
 | Brief PDF | ~~`@react-pdf/renderer` (server)~~ → **`window.print()` + a print stylesheet (shipped)** | No new dependency: `#brief-print-area` (Sheet 06) isolates via `@media print` in `app/globals.css`. Revisit `@react-pdf/renderer` only if a one-click download (no print dialog) becomes a real requirement |
+| Website audit AI + bot check ([AUDIT.md](./AUDIT.md)) | xAI SDK vs `fetch`; Turnstile React wrapper vs script | **No packages.** Grok via its OpenAI-compatible API with native `fetch` (`lib/ai/xai.ts`, env `XAI_API_KEY`, `XAI_MODEL`); Cloudflare Turnstile via its script tag + server-side `fetch` verification. HTML is scanned by a small in-repo parser (`features/audit/server/parse-html.ts`) instead of `cheerio` |
 | Analytics | `@vercel/analytics`, Plausible, PostHog | `@vercel/analytics` if hosting on Vercel. PostHog if we need funnels |
 | Booking | Cal.com embed, Calendly link | **Calendly link (chosen).** `BOOK_A_CALL_URL` in `lib/site.ts` reads `NEXT_PUBLIC_CALENDLY_URL`, falling back to `/work#contact` when unset. External links open in a new tab. The 1-day minimum notice is configured in Calendly (event type → Scheduling settings → Minimum scheduling notice = 1 day), not in code |

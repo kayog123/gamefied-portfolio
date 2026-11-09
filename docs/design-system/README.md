@@ -11,7 +11,7 @@ The site is drawn like an **engineering blueprint**. Everything sits on a navy d
 | 1 | [Foundations](./01-foundations.md) | Color tokens, typography, spacing, grid, radii, surfaces, iconography |
 | 2 | [Components](./02-components.md) | Sheet 00 inventory with proposed React APIs, then buttons, inputs, chips, status tags, progress, skill shards, panels, tooltips, annotations, proof card, modal, sheets |
 | 3 | [Layout & patterns](./03-layout-and-patterns.md) | App shell, top bar, HUD layout, responsive rules, the City scene |
-| 4 | [Screens](./04-screens.md) | Screen-by-screen spec for the full flow (Sheets 01–08) |
+| 4 | [Screens](./04-screens.md) | Screen-by-screen spec for the full flow (Sheets 01–08) and the website audit (Sheet 09) |
 | 5 | [Motion, a11y & content](./05-motion-accessibility-content.md) | Durations and easings, keyboard and focus rules, voice and copy |
 | — | [`tokens.css`](./tokens.css) | Drop-in Tailwind v4 `@theme` tokens |
 

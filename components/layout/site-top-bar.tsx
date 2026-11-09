@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { href: '/work#experience', label: 'Experience' },
   { href: '/process', label: 'Process' },
   { href: '/blog', label: 'Blog' },
+  { href: '/audit', label: 'Audit' },
   { href: '/work#contact', label: 'Contact' },
 ];
 

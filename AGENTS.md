@@ -17,6 +17,7 @@ This repo is the **Blueprint** portfolio. The docs in `docs/` are the source of 
 | `docs/GOALS.md` | Starting any feature: mission, audiences, scope / non-goals, quality bar, milestones (M0–M7), open questions |
 | `docs/FILE-STRUCTURE.md` | Creating any file or hook: folder layout, naming conventions, server/client boundaries, custom-hook rules and catalog |
 | `docs/PACKAGES.md` | Before `npm i` anything: approved/planned packages, "deliberately not using" list, rules for adding a package |
+| `docs/AUDIT.md` | Working on the website audit: flow, open vs locked checks, SSRF guard, data, links, phases |
 | `docs/SEO-GEO-AEO.md` | Building any page, metadata, sitemap/robots, OG images, JSON-LD, or writing page copy |
 | `docs/design-system/README.md` | Any UI work. Index of the Blueprint design system |
 | `docs/design-system/01-foundations.md` | Colors, typography, spacing, radii, surfaces, icons |

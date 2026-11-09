@@ -190,6 +190,46 @@ The progress bar in the top bar updates, with the new percent in green.
 
 **Mobile (8b):** a 38px H1, a single column, and the architecture diagram as a vertical stack.
 
+## 09 · Website audit
+
+**Purpose:** a free, passive website audit that doubles as a lead funnel (flow, checks and data: [AUDIT.md](../AUDIT.md)). Route `/audit`, a `(site)` page on the content-page grid. Designed on its own canvas, "Sheet 09 · Website Audit" (not yet in the Blueprint project). Built from Sheet 00 parts (`Button`, `panel-ticks`), the mono eyebrow → headline → lead pattern, and "Stat + bar + label".
+
+**Screens**
+
+| Board | What it shows |
+|-------|---------------|
+| 09a / 09b Results | Desktop: 3 score cards → **"What this means for you"** → findings list beside the full-audit panel. Mobile stacks the same flow |
+| 09c Start · scanning · error | Hero + URL field; a progress panel with a step log; a red field with an alert message |
+| 09d Request | Modal: name, email, optional focus, consent, Turnstile. Sent state lists the 3 next steps (Phase 3) |
+| 09e Shared link | Snapshot of the results with an optional `PREPARED FOR [COMPANY]` tag, expiry date, and an expired state (Phase 3b) |
+| 09f Share image | 1200×630 link-preview card: domain, 3 scores, critical and locked counts (Phase 3b) |
+
+**Results**
+
+- **Score cards:** category label, a 48px mono score with `/100` in glow at 40% size, a 4px bar, and "N of M checks need work". Colour is not used for the score (the bar is always glow), so the number and caption carry the meaning.
+- **What this means for you:** sits **above the findings** because most viewers are non-technical. A 30px verdict headline, a lead sentence, and one card per category with a mono status label (`NEEDS ATTENTION` red-bordered, `WORTH FIXING` neutral, `IN GOOD SHAPE` blue). Closing row: "Email me about these results" (secondary) and "Book a call to walk through it" (primary). Copy is picked by code from scores and counts (`content/audit-page.ts`, `features/audit/audit.summary.ts`); it never names a locked finding.
+- **Findings:** failing checks only, most severe first, locked ahead of open within a severity. Filter buttons (`aria-pressed`) for All / SEO / Security / Maintainability. Open rows are disclosure buttons that expand to two columns, "WHY IT MATTERS" and "HOW TO FIX". Locked rows show a lock tile, title, severity tag, two skeleton bars and "The cause and the fix are part of the full audit." Nothing locked is in the DOM.
+- **Severity:** only `critical` uses colour (`danger` tag). Warnings use a triangle icon with neutral text, notices an info icon. Blue / amber / green keep their status meaning and are not used for severity.
+- **Full-audit panel:** four-tick panel, `FULL AUDIT` eyebrow, "N findings are locked, including a critical issue", four diamond bullets, one primary button "Get the full audit".
+
+**Exception to "one amber button per view":** the results view has **two** primary (amber) buttons, "Get the full audit" and "Book a call to walk through it", because both are lead actions. "Email me", "Audit again" and the top bar's "Talk to me" stay secondary. This applies to the audit pages only.
+
+**Scanning:** a percent readout (an estimate eased from elapsed time, labelled "Progress is an estimate"), a bar and a four-step log. `role="status"` / `aria-live="polite"`. The bar width transition is disabled under `prefers-reduced-motion`.
+
+**Performance card:** the 4th score card, `PERFORMANCE · MOBILE`. It appears with the results in a dashed "Measuring with PageSpeed. Usually 10–30 s." state and fills in when Google answers: score, bar, and `LCP · CLS · TBT` in mono. Scores under 90 add "What is slowing it down is part of the full audit." If PageSpeed is unavailable it says so and the rest of the page is unaffected. Grid: 1 column on phones, 2 from `sm`, 4 from `xl`.
+
+**Request dialog (09d):** a native `<dialog>` (focus trap, Esc, focus return for free). Name, email, optional focus textarea, a pre-checked consent box ("Email me about this audit only. No newsletters."), an `interaction-only` Turnstile widget, Cancel (ghost, `type="button"`) and "Request full audit" (primary). Sent state: "Request received", three next steps, and a "Book a 30-minute call" link. Errors are announced (`role="alert"`) and always include the contact email.
+
+**Review page (Jovanni only, not a visitor screen):** `/audit/review/…`, noindex. Who, their free-scan scores and counts, then a four-tick **FULL AUDIT** panel and an **OTHER** row ("Reply by email" / "Mark contacted" / "Decline"). The panel moves through five states: *not run* (explains that it costs tokens and that nothing is sent unread), *running* (status text, disabled "Running…" button, the page refreshes itself every 4 s), *failed* (danger text with the reason, "Run full audit" again), *report ready* (when and by which model, tokens used, or a bold note that the AI was unavailable; a copyable report link; "Open the report"; primary "Re-run full audit" and secondary "Send report to {email}") and *sent* (date, "Send it again"; a send failure shows its reason and says to send the link by hand). "Run full audit" is the only primary button on the page. Neutral mono labels for status; blue / amber / green stay reserved for build status.
+
+**Full report (the requester's screen):** `/audit/report/…`, noindex, reached from the emailed link. Order: eyebrow `FULL WEBSITE AUDIT`, H1 "Full audit of {domain}", a lead with the date and "Automated checks plus an AI-assisted analysis, reviewed by me." (or just "Automated checks…" when the AI wasn't used); the three score cards; **THE SHORT VERSION** (four-tick panel: headline, the AI's summary and a **WHAT THIS COSTS YOU** paragraph, or the standard lead without AI); **What to do, in order** (numbered cards: title, severity tag, the action, then a mono `HIGH IMPACT · QUICK WIN · UNDER AN HOUR` line); **All N findings, explained** (each with evidence in mono, WHY IT MATTERS and HOW TO FIX side by side; anchors from the plan); a collapsed "N checks passed"; and "Want me to walk you through it?" with Email (secondary) and Book a call (primary). Nothing is locked here. An expired link shows "This report link has expired" with an "Ask for a new link" button.
+
+**Share this audit (09a):** a secondary-button panel under the full-audit panel, **shown only when the server can store the snapshot** (otherwise it is absent, not disabled). "Create share link" → a read-only field with the link and "Copy link" (the label becomes "Copied" for 2 s). States: creating, ready, error (inline, `role="status"`). Shown only for a fresh scan, never on a shared page.
+
+**Shared page (09e):** `/audit/s/…`, noindex. Optional `PREPARED FOR [COMPANY]` tag (a 1px glow outline, mono), the H1 "Website audit of {domain}", a lead that says who ran it and when and that this is a preview, and "SNAPSHOT · LINK VALID UNTIL {date}". Below it the same results as the live page, minus the speed card and the share panel. Expired state: eyebrow `SHARED AUDIT · EXPIRED`, "This audit is out of date", and a primary "Run a fresh audit" button (it opens `/audit`; the domain is not pre-filled).
+
+**Share image (09f):** 1200×630, navy with the major grid, `WEBSITE AUDIT` eyebrow and the logo mark, the domain at 88 px (64 px over 22 characters), a red `N CRITICAL` count when there is one, and three score tiles with bars. Default font for now.
+
 ---
 
 ## Sample data
