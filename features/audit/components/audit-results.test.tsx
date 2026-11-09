@@ -4,6 +4,7 @@ import { AUDIT_CHECKS } from '@/content/audit-checks';
 import type { AuditPreview, AuditResult, Finding } from '@/types/audit';
 import { countFailures, mergeFindings, scoreFindings, toPreview } from '../audit.utils';
 import { AuditResults } from './audit-results';
+import { PerformanceCard } from './performance-card';
 
 /** A neglected site: every check fails except a few, so locked and open findings both appear. */
 function buildPreview(): AuditPreview {
@@ -27,7 +28,7 @@ function buildPreview(): AuditPreview {
 
 describe('AuditResults', () => {
   const preview = buildPreview();
-  const html = renderToStaticMarkup(<AuditResults preview={preview} />);
+  const html = renderToStaticMarkup(<AuditResults preview={preview} performance={{ status: 'loading' }} />);
 
   it('renders scores, the plain-English summary and both contact buttons above the findings', () => {
     expect(html).toContain('Audit of example.com');
@@ -66,5 +67,33 @@ describe('AuditResults', () => {
     const locked = preview.findings.filter((f) => f.isLocked).length;
     expect(html).toContain(`${locked} findings are locked`);
     expect(html).toContain('Get the full audit');
+  });
+});
+
+describe('PerformanceCard', () => {
+  const result = { score: 62, strategy: 'mobile' as const, metrics: { lcpMs: 3400, cls: 0.05, tbtMs: 210 }, measuredAt: '2026-11-09T02:00:00.000Z' };
+
+  it('shows a measuring state first, so the page never waits on PageSpeed', () => {
+    const html = renderToStaticMarkup(<PerformanceCard performance={{ status: 'loading' }} />);
+    expect(html).toContain('PERFORMANCE · MOBILE');
+    expect(html).toContain('Measuring with PageSpeed');
+  });
+
+  it('shows the score and the three headline metrics', () => {
+    const html = renderToStaticMarkup(<PerformanceCard performance={{ status: 'done', result }} />);
+    expect(html).toContain('62');
+    expect(html).toContain('LCP 3.4 s · CLS 0.05 · TBT 210 ms');
+    expect(html).toContain('part of the full audit');
+  });
+
+  it('does not tease the full audit for a fast site', () => {
+    const html = renderToStaticMarkup(<PerformanceCard performance={{ status: 'done', result: { ...result, score: 96 } }} />);
+    expect(html).not.toContain('part of the full audit');
+  });
+
+  it('says so, without alarming the visitor, when PageSpeed is unavailable', () => {
+    const html = renderToStaticMarkup(<PerformanceCard performance={{ status: 'unavailable' }} />);
+    expect(html).toContain('Couldn’t measure speed right now');
+    expect(html).toContain('other results are complete');
   });
 });

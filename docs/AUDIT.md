@@ -75,7 +75,15 @@ A shared link emails Jovanni the first time it's opened ("lead opened your audit
 
 ## Env
 
-`XAI_API_KEY`, `XAI_MODEL`, `PAGESPEED_API_KEY`, `SANITY_AUDIT_DATASET`, `SANITY_AUDIT_TOKEN`, `AUDIT_SIGNING_SECRET`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`.
+`XAI_API_KEY`, `XAI_MODEL`, `PAGESPEED_API_KEY` (required in practice: without a key Google answers 429), `SANITY_AUDIT_DATASET`, `SANITY_AUDIT_TOKEN`, `AUDIT_SIGNING_SECRET`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`.
+
+## Performance (PageSpeed)
+
+- Separate request after the main results, so the page never waits on it (Lighthouse takes 10–30 s). Route `maxDuration = 60`; the client gives up at 65 s.
+- Open: the mobile score plus LCP, CLS and TBT. Locked (full audit): the LCP element and render-blocking resources. `parsePageSpeed` keeps only the open fields.
+- Cached about a day per URL; failures (quota, timeout, unscorable page) for seconds, and the card then says "Couldn’t measure speed right now" without affecting the rest of the audit.
+- Google fetches the page itself, so nothing reaches our network, but the URL is still checked as public to avoid spending quota on junk.
+- The summary ("What this means for you") does not use the performance score yet.
 
 ## Abuse limits
 
@@ -89,7 +97,7 @@ A shared link emails Jovanni the first time it's opened ("lead opened your audit
 | # | Phase | Status |
 |---|-------|--------|
 | 1 | Engine: SSRF-safe fetch, checks, `toPreview`, `POST /api/audit/preview`, unit tests (`npm test`) | ✅ Done (Turnstile check added in Phase 3) |
-| 2 | PageSpeed Insights + staged progress UI | — |
+| 2 | PageSpeed Insights: `POST /api/audit/performance`, 4th "Performance · mobile" card that fills in after the other results | ✅ Built; needs `PAGESPEED_API_KEY` for a live run (not yet verified end to end) |
 | — | **Design:** Sheet 09 · Audit (canvas), documented in `design-system/04-screens.md` | ✅ Done |
 | 2b | `/audit` page: URL form, scanning state, results, "What this means for you", findings list, full-audit panel (mailto and Calendly for now) | ✅ Built; not yet checked in a browser |
 | 3 | Lead capture: Turnstile, private dataset, request form, review page, emails | — |

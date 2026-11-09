@@ -1,15 +1,17 @@
 import type { AuditCategory, AuditPreview } from '@/types/audit';
 import { AUDIT_CATEGORIES } from '../audit.constants';
 import { buildSummary } from '../audit.summary';
+import type { PerformanceState } from '../hooks/use-audit-scan';
 import { AuditSummarySection } from './audit-summary';
 import { FindingsList } from './findings-list';
 import { FullAuditPanel } from './full-audit-panel';
+import { PerformanceCard } from './performance-card';
 import { ScoreCard } from './score-card';
 
-export type AuditResultsProps = { preview: AuditPreview };
+export type AuditResultsProps = { preview: AuditPreview; performance: PerformanceState };
 
 /** Sheet 09 results: scores → "what this means" → findings + full-audit panel. */
-export function AuditResults({ preview }: AuditResultsProps) {
+export function AuditResults({ preview, performance }: AuditResultsProps) {
   const domain = new URL(preview.finalUrl).hostname;
   const summary = buildSummary(preview);
   const lockedCount = preview.findings.filter((finding) => finding.isLocked).length;
@@ -35,10 +37,11 @@ export function AuditResults({ preview }: AuditResultsProps) {
             · {preview.findings.length} CHECKS
           </p>
         </div>
-        <div className="grid gap-3 md:grid-cols-3 md:gap-4">
+        <div className="grid gap-3 sm:grid-cols-2 md:gap-4 xl:grid-cols-4">
           {AUDIT_CATEGORIES.map((category) => (
             <ScoreCard key={category} category={category} score={preview.scores[category]} {...tally(category)} />
           ))}
+          <PerformanceCard performance={performance} />
         </div>
       </section>
 

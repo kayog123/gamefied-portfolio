@@ -100,3 +100,18 @@ export function toPreview(result: AuditResult): AuditPreview {
   });
   return { ...result, findings };
 }
+
+export type PerformanceLevel = 'good' | 'fair' | 'poor';
+
+export const PERFORMANCE_LEVEL_LABEL: Record<PerformanceLevel, string> = {
+  good: 'Fast',
+  fair: 'Needs improvement',
+  poor: 'Slow',
+};
+
+/** Lighthouse's own bands: 90–100 good, 50–89 needs improvement, 0–49 poor. */
+export function performanceLevel(score: number): PerformanceLevel {
+  if (score >= 90) return 'good';
+  if (score >= 50) return 'fair';
+  return 'poor';
+}

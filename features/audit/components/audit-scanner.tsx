@@ -11,7 +11,7 @@ import { AuditResults } from './audit-results';
 
 /** The interactive part of `/audit`: URL form, scanning state and results. Everything else is server-rendered. */
 export function AuditScanner() {
-  const { state, progress, scan } = useAuditScan();
+  const { state, performance, progress, scan } = useAuditScan();
   const [url, setUrl] = useState('');
   const [inputError, setInputError] = useState<string | null>(null);
 
@@ -90,7 +90,7 @@ export function AuditScanner() {
           <p role="status" className="sr-only">
             Audit of {hostOf(state.preview.finalUrl)} complete.
           </p>
-          <AuditResults preview={state.preview} />
+          <AuditResults preview={state.preview} performance={performance} />
         </>
       )}
     </div>

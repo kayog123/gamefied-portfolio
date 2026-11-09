@@ -216,7 +216,9 @@ The progress bar in the top bar updates, with the new percent in green.
 
 **Scanning:** a percent readout (an estimate eased from elapsed time, labelled "Progress is an estimate"), a bar and a four-step log. `role="status"` / `aria-live="polite"`. The bar width transition is disabled under `prefers-reduced-motion`.
 
-**Not built yet:** the Performance (PageSpeed) card, the request modal, the shared-link page and its share image.
+**Performance card:** the 4th score card, `PERFORMANCE · MOBILE`. It appears with the results in a dashed "Measuring with PageSpeed. Usually 10–30 s." state and fills in when Google answers: score, bar, and `LCP · CLS · TBT` in mono. Scores under 90 add "What is slowing it down is part of the full audit." If PageSpeed is unavailable it says so and the rest of the page is unaffected. Grid: 1 column on phones, 2 from `sm`, 4 from `xl`.
+
+**Not built yet:** the request modal, the shared-link page and its share image.
 
 ---
 

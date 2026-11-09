@@ -57,3 +57,22 @@ export type AuditResult = {
 export type AuditPreview = Omit<AuditResult, 'findings'> & {
   findings: PreviewFinding[];
 };
+
+/** Lab metrics from a mobile Lighthouse run (PageSpeed Insights). */
+export type PerformanceMetrics = {
+  /** Largest Contentful Paint, ms. */
+  lcpMs: number;
+  /** Cumulative Layout Shift, unitless. */
+  cls: number;
+  /** Total Blocking Time, ms. */
+  tbtMs: number;
+};
+
+/** The open part of a PageSpeed result: the score and headline numbers. Root causes stay in the full audit. */
+export type PerformanceResult = {
+  /** Lighthouse performance score, 0–100. */
+  score: number;
+  strategy: 'mobile';
+  metrics: PerformanceMetrics;
+  measuredAt: string;
+};
