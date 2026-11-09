@@ -40,6 +40,7 @@ fullstack-portfolio/
 │  ├─ studio/[[...tool]]/        # Embedded Sanity Studio ("/studio"), reads ../sanity.config.ts
 │  ├─ api/
 │  │  ├─ revalidate/route.ts     # Sanity webhook → revalidateTag("blog")
+│  │  ├─ audit/preview/route.ts  # POST url → free website-audit preview (docs/AUDIT.md)
 │  │  └─ blueprint/
 │  │     └─ route.ts             # POST idea → structured blueprint (server-only AI call)
 │  ├─ components/                # Dev-only UI kit preview (Sheet 00), excluded from prod
@@ -64,6 +65,7 @@ fullstack-portfolio/
 │  │  ├─ hooks/ (use-blueprint-generation.ts)
 │  │  ├─ server/ (generate-blueprint.ts, prompt.ts, fallback.ts)   # server-only
 │  │  └─ index.ts
+│  ├─ audit/                     # Website audit (docs/AUDIT.md): server/ (SSRF-safe fetch, checks/, run-audit.ts), audit.utils.ts (scoring, toPreview)
 │  ├─ blog/                      # Blog: components/, server/ (Sanity reads), studio/ (schemas, imported only by sanity.config.ts)
 │  ├─ city/                      # Shared isometric City scene (all modes)
 │  │  ├─ components/ (city-scene.tsx, building.tsx, building-label.tsx)
@@ -121,10 +123,12 @@ fullstack-portfolio/
 │  ├─ skills.ts
 │  ├─ experience.ts
 │  ├─ presets.ts                 # 5 idea presets + their fallback blueprints
+│  ├─ audit-checks.ts            # Website-audit check catalog (server-only: locked fix copy)
 │  └─ spark-questions.ts         # Rotating Sheet 01 headline questions
 │
 ├─ types/                        # Global/shared types (domain models)
-│  └─ blueprint.ts               # Feature, Building, BuildStatus, Blueprint, Shard…
+│  ├─ blueprint.ts               # Feature, Building, BuildStatus, Blueprint, Shard…
+│  └─ audit.ts                   # AuditCheck, Finding, AuditResult, AuditPreview…
 │
 ├─ public/                       # Static assets (images, OG fallbacks, résumé PDF)
 ├─ docs/                         # Goals, design system, this file

@@ -55,6 +55,12 @@ Targets are TBD until there's baseline traffic. Track these from launch:
 | 07 | See My Work: static portfolio (hero, 6 projects, skills, experience, contact) |
 | 08 | Case study template, used for all 6 projects |
 
+### Added after v1 scope
+
+| Experience | Doc |
+|------------|-----|
+| Website audit (`/audit`): free passive SEO/security/maintainability preview, shareable links, full AI audit unlocked by reaching out | [AUDIT.md](./AUDIT.md) |
+
 ### Non-goals
 
 - **Real code generation.** The output is a blueprint and brief, explicitly "LIVE (in blueprint form)".
