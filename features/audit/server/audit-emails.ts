@@ -38,7 +38,7 @@ export function sendAuditRequestEmail({ name, email, url, domain, message, previ
     '',
     message ? `Their message:\n${message}` : 'They left no message.',
     '',
-    reviewUrl ? `Review it (link valid 7 days):\n${reviewUrl}` : 'This request could not be saved to the audits dataset, so there is no review link. Reply to this email.',
+    reviewUrl ? `Review it (link valid 7 days):\n${reviewUrl}` : 'There is no review link: requests are not being saved to a store, so this email is the only record. Reply to this email to answer them.',
   ];
 
   return sendEmail({ replyTo: email, subject: `Audit request: ${oneLine(domain)} (${oneLine(name)})`, text: lines.join('\n') });

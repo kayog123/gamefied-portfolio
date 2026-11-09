@@ -3,6 +3,7 @@
 import { Send, X } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/blueprint';
+import { REQUEST_NEXT_STEPS } from '@/content/audit-page';
 import { cn } from '@/lib/cn';
 import { BOOK_A_CALL_URL, SOCIAL_LINKS } from '@/lib/site';
 import { auditRequestSchema } from '../audit.schemas';
@@ -113,14 +114,12 @@ export function RequestDialog({ isOpen, onClose, url, domain, shareId }: Request
               <span className="font-mono text-sm text-text-strong">{email}</span> within [X business days].
             </p>
             <ol className="flex flex-col gap-2.5 rounded-panel border border-wire/25 bg-glass p-4 font-sans text-sm leading-[1.45] text-text-soft">
-              {['I run the deep checks again on your live site.', 'I review the findings and the fix plan myself.', 'You get a private report link, valid for 30 days.'].map(
-                (step, index) => (
-                  <li key={step} className="flex gap-3">
-                    <span className="shrink-0 font-mono text-xs text-glow">{String(index + 1).padStart(2, '0')}</span>
-                    {step}
-                  </li>
-                ),
-              )}
+              {REQUEST_NEXT_STEPS.map((step, index) => (
+                <li key={step} className="flex gap-3">
+                  <span className="shrink-0 font-mono text-xs text-glow">{String(index + 1).padStart(2, '0')}</span>
+                  {step}
+                </li>
+              ))}
             </ol>
             <p className="font-sans text-sm text-muted">
               Want to talk it through sooner?{' '}

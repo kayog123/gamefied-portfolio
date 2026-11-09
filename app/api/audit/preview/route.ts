@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { hasScheme, MAX_AUDIT_URL_LENGTH, normalizeAuditUrl, toPreview } from '@/features/audit';
+import { isAuditStoreConfigured } from '@/features/audit/server/audit-store';
 import { runAudit } from '@/features/audit/server/run-audit';
 import { createScanTicket, SigningUnavailableError } from '@/features/audit/server/signing';
 import { clientIp, verifyTurnstile } from '@/features/audit/server/turnstile';
@@ -55,7 +56,12 @@ export async function POST(request: Request) {
   if (!outcome.ok) return NextResponse.json({ error: outcome.message }, { status: FAILURE_STATUS[outcome.reason] });
 
   try {
-    return NextResponse.json({ preview: toPreview(outcome.result), ticket: createScanTicket(outcome.result.finalUrl) });
+    return NextResponse.json({
+      preview: toPreview(outcome.result),
+      ticket: createScanTicket(outcome.result.finalUrl),
+      // Shared audits need the private store. Without it the page hides the share box instead of offering a button that errors.
+      canShare: isAuditStoreConfigured(),
+    });
   } catch (error) {
     if (error instanceof SigningUnavailableError) {
       console.error('[audit]', error.message);

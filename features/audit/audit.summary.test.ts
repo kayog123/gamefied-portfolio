@@ -48,3 +48,12 @@ describe('buildSummary', () => {
     expect(JSON.stringify(summary)).not.toMatch(/HSTS|CSP|Content-Security|JSON-LD|cookie/i);
   });
 });
+
+describe('request confirmation copy', () => {
+  it('only promises what is true with or without storage: an emailed report, never a link, dashboard or account', async () => {
+    const { REQUEST_NEXT_STEPS } = await import('@/content/audit-page');
+    expect(REQUEST_NEXT_STEPS).toHaveLength(3);
+    for (const step of REQUEST_NEXT_STEPS) expect(step).not.toMatch(/\blink\b|dashboard|account|log ?in|portal/i);
+    expect(REQUEST_NEXT_STEPS.join(' ')).toContain('email you the full report');
+  });
+});

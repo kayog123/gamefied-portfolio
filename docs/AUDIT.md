@@ -123,6 +123,21 @@ The blog dataset may be public. Audit data contains emails, so it lives in a sep
 - **Signing:** `AUDIT_SIGNING_SECRET` (16+ chars). Tokens are `<expiry>.<HMAC-SHA256>` over purpose + value + expiry, so a scan ticket can't be replayed as a review link. In production a missing secret fails closed.
 - **To go live:** create a **private** dataset named `audits` in the Sanity project, create a token with write access to it, set the env vars below, and set a Vercel Firewall rate-limit rule on `/api/audit/*`.
 
+## Launch mode: no storage (current)
+
+Storage (the private `audits` dataset) needs a Sanity plan that allows private datasets, and the project is on a plan that doesn't (creating one returns "Payment Required"). The public `production` and `development` datasets are not an option: anyone can query them, which would expose requesters' emails and every shared link. So the site launches **without storage**, and every store-dependent feature degrades on purpose. Nothing needs to be turned off; it follows from `SANITY_AUDIT_TOKEN` being unset.
+
+| Works | Does not exist until storage does |
+|-------|-----------------------------------|
+| Free scan, plain-English summary, locked findings, PageSpeed score | "Create share link" (the box is hidden: `/api/audit/preview` answers `canShare: false`; `/api/audit/share` also refuses with 503) |
+| "Get the full audit": validated, bot-checked, and **emailed to Jovanni** with the requester as `Reply-To`, their scan scores and message | The review page, "Run full audit" with Grok, the report page and "Send report" (there is no request ID to sign a link for) |
+| Replying to the requester and running the deeper checks by hand | Duplicate-request detection (the same person can email you twice), view counts, the first-open email, `/studio/audits` |
+
+- **The email says so.** Without a store it reads "There is no review link: requests are not being saved to a store, so this email is the only record." That is the normal state, not an error. Keep these emails: they are the only record.
+- **The confirmation screen only promises an emailed report** (`REQUEST_NEXT_STEPS`, guarded by a test), never a link or a dashboard.
+- **Turning storage on later needs no code change:** create the private dataset, set `SANITY_AUDIT_TOKEN` (and `NEXT_PUBLIC_SANITY_AUDIT_DATASET` if not `audits`), redeploy. Sharing, the review page, the full audit and the report page switch on together. Requests made before that stay email-only.
+- **Fallbacks if Sanity stays unaffordable:** replace `audit-store.ts` (the only file that talks to Sanity; the GROQ lives in `audit-queries.ts`) with another private store, and replace the `/studio/audits` inbox, which is where `preparedFor` and `reportExpiresAt` are edited.
+
 ## Abuse limits
 
 - Turnstile on the scan, share and request forms.
@@ -138,7 +153,7 @@ The blog dataset may be public. Audit data contains emails, so it lives in a sep
 | 2 | PageSpeed Insights: `POST /api/audit/performance`, 4th "Performance · mobile" card that fills in after the other results | ✅ Built; needs `PAGESPEED_API_KEY` for a live run (not yet verified end to end) |
 | — | **Design:** Sheet 09 · Audit (canvas), documented in `design-system/04-screens.md` | ✅ Done |
 | 2b | `/audit` page: URL form, scanning state, results, "What this means for you", findings list, full-audit panel (mailto and Calendly for now) | ✅ Built; not yet checked in a browser |
-| 3 | Lead capture: Turnstile on scan + request, private `audits` dataset, request dialog, signed review page, emails | ✅ Built; not yet run against real Sanity/Turnstile/Resend keys |
+| 3 | Lead capture: Turnstile on scan + request, private `audits` dataset, request dialog, signed review page, emails | ✅ Built; **launching email-only** (no private dataset yet, see "Launch mode"); not yet run against real Turnstile/Resend keys |
 | 3b | Shareable snapshots, share image, view tracking, first-open email | ✅ Built; not yet run against a real Sanity dataset |
 | 4 | Full audit: run + lock, Grok analysis with deterministic fallback, report page, send step | ✅ Built; Grok not yet called against the real API |
 | 5 | Polish: rate-limit rule, a11y, reduced motion, doc updates | — |

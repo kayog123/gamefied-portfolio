@@ -5,7 +5,10 @@ export type AuditScanState =
   | { status: 'idle' }
   | { status: 'scanning'; url: string }
   | { status: 'error'; url: string; message: string }
-  /** `ticket` proves this scan passed the bot check; the speed test and "Share" need it. `null` if the server issued none. */
+  /**
+   * `ticket` lets the visitor share this scan. It is `null` when sharing isn't available (no private store is
+   * configured), which hides the share box. The speed test gets its own copy of the ticket.
+   */
   | { status: 'done'; preview: AuditPreview; ticket: string | null };
 
 /** PageSpeed runs after the main results are shown, so the page never waits on it. */
@@ -86,7 +89,7 @@ export function useAuditScan(): UseAuditScanResult {
           body: JSON.stringify({ url, turnstileToken }),
           signal: AbortSignal.any([controller.signal, AbortSignal.timeout(CLIENT_TIMEOUT_MS)]),
         });
-        const body = (await response.json().catch(() => null)) as { preview?: AuditPreview; ticket?: string; error?: string } | null;
+        const body = (await response.json().catch(() => null)) as { preview?: AuditPreview; ticket?: string; canShare?: boolean; error?: string } | null;
         if (controller.signal.aborted) return;
 
         if (!response.ok || !body?.preview) {
@@ -94,7 +97,7 @@ export function useAuditScan(): UseAuditScanResult {
           return;
         }
         setProgress(100);
-        setState({ status: 'done', preview: body.preview, ticket: body.ticket ?? null });
+        setState({ status: 'done', preview: body.preview, ticket: body.canShare ? (body.ticket ?? null) : null });
         if (body.ticket) void measurePerformance(body.preview.finalUrl, body.ticket, controller);
         else setPerformance({ status: 'unavailable' });
       } catch {

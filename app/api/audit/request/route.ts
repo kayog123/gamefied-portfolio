@@ -14,8 +14,13 @@ export const maxDuration = 30;
 const SUMMARY_TIMEOUT_MS = 8_000;
 
 /** Our own run of the free scan (never trusted from the browser). `null` if it didn't finish in time. */
-function scan(url: string): Promise<AuditOutcome | null> {
-  return Promise.race([runAudit(url), new Promise<null>((resolve) => setTimeout(() => resolve(null), SUMMARY_TIMEOUT_MS))]);
+async function scan(url: string): Promise<AuditOutcome | null> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([runAudit(url), new Promise<null>((resolve) => (timer = setTimeout(() => resolve(null), SUMMARY_TIMEOUT_MS)))]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /** Scores and counts only, so nothing locked is copied into the lead record. */

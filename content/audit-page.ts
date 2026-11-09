@@ -30,6 +30,17 @@ export const CATEGORY_INFO: Record<AuditCategory, { label: string; question: str
   },
 };
 
+/**
+ * What the visitor is told happens after they request the full audit. Deliberately says nothing about a
+ * report *link* or a *dashboard*: the audit also runs with no storage (requests are only emailed to Jovanni),
+ * so the only promise that is always true is "I email you the report".
+ */
+export const REQUEST_NEXT_STEPS = [
+  'I run the deep checks again on your live site.',
+  'I review the findings and the fix plan myself.',
+  'I email you the full report with a suggested order to fix things in.',
+] as const;
+
 export const LEVEL_LABEL: Record<ScoreLevel, string> = {
   good: 'IN GOOD SHAPE',
   fair: 'WORTH FIXING',

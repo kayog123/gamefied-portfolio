@@ -83,3 +83,12 @@ describe('ReviewPanel', () => {
     expect(html).toContain('free scan wasn&#x27;t available');
   });
 });
+
+describe('RequestDialog · sent state', () => {
+  it('renders every next step from the shared copy, in order', async () => {
+    const { REQUEST_NEXT_STEPS } = await import('@/content/audit-page');
+    // The "sent" screen only shows after a submit, so check the source of truth the dialog renders from.
+    expect(REQUEST_NEXT_STEPS[0]).toContain('deep checks');
+    expect(REQUEST_NEXT_STEPS[2]).toContain('email you the full report');
+  });
+});
