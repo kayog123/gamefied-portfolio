@@ -28,6 +28,8 @@ fullstack-portfolio/
 │  │  └─ page.tsx                # "/"  →  Spark → Generating → HUD → … → Launch
 │  ├─ (site)/                    # Route group: static, scrollable pages
 │  │  ├─ layout.tsx              # Site top bar + footer
+│  │  ├─ audit/
+│  │  │  └─ page.tsx             # "/audit"  (09 Website audit: free scan + results)
 │  │  ├─ process/
 │  │  │  └─ page.tsx             # "/process"  (client process, discovery call → delivery, + FAQ)
 │  │  ├─ blog/
@@ -65,7 +67,7 @@ fullstack-portfolio/
 │  │  ├─ hooks/ (use-blueprint-generation.ts)
 │  │  ├─ server/ (generate-blueprint.ts, prompt.ts, fallback.ts)   # server-only
 │  │  └─ index.ts
-│  ├─ audit/                     # Website audit (docs/AUDIT.md): server/ (SSRF-safe fetch, checks/, run-audit.ts), audit.utils.ts (scoring, toPreview)
+│  ├─ audit/                     # Website audit (docs/AUDIT.md): components/ (scanner, results, findings), hooks/use-audit-scan.ts, server/ (SSRF-safe fetch, checks/, run-audit.ts), audit.utils.ts (scoring, toPreview), audit.summary.ts
 │  ├─ blog/                      # Blog: components/, server/ (Sanity reads), studio/ (schemas, imported only by sanity.config.ts)
 │  ├─ city/                      # Shared isometric City scene (all modes)
 │  │  ├─ components/ (city-scene.tsx, building.tsx, building-label.tsx)
@@ -124,6 +126,7 @@ fullstack-portfolio/
 │  ├─ experience.ts
 │  ├─ presets.ts                 # 5 idea presets + their fallback blueprints
 │  ├─ audit-checks.ts            # Website-audit check catalog (server-only: locked fix copy)
+│  ├─ audit-page.ts              # /audit copy: hero, category blurbs, plain-English summary cards
 │  └─ spark-questions.ts         # Rotating Sheet 01 headline questions
 │
 ├─ types/                        # Global/shared types (domain models)
@@ -286,6 +289,7 @@ Write a custom hook when **stateful or effectful logic** is:
 | `useTypewriter(text, opts)` | `spark` | Types a preset into the idea input, then calls `onDone` |
 | `useRotatingTypewriter({ lines, paused })` | `spark` | Types, holds, erases and cycles the Sheet 01 headline questions (`content/spark-questions.ts`); frozen on the full line when paused or reduced motion |
 | `useBlueprintGeneration()` | `generating` | Calls `/api/blueprint`, streams log lines and progress, falls back to the closest preset on error |
+| `useAuditScan()` | `audit` | Runs `/api/audit/preview`; returns scan state, an estimated progress and `scan`/`reset` |
 | `useGame()` | `game` | Reads game state and dispatch from `GameProvider` |
 | `useBuildProgress()` | `game` | Derived values: `percent`, `liveCount`, segment statuses, collected shards |
 | `useLinkedHover()` | `hud` / `city` | Two-way hover/focus between list rows and buildings |

@@ -106,3 +106,21 @@ export function processHowToSchema(stages: ProcessStage[], opts: { name: string;
     })),
   };
 }
+
+/** `WebPage` for `/audit`, describing the free audit as a service offered by Jovanni. */
+export function auditPageSchema(name: string, description: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name,
+    description,
+    url: `${SITE_URL}/audit`,
+    mainEntity: {
+      '@type': 'Service',
+      name: 'Free website audit (SEO, security, maintainability)',
+      serviceType: 'Website audit',
+      provider: { '@type': 'Person', name: 'Jovanni Jungco', url: SITE_URL },
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+  };
+}

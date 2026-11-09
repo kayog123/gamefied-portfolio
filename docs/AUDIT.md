@@ -90,7 +90,8 @@ A shared link emails Jovanni the first time it's opened ("lead opened your audit
 |---|-------|--------|
 | 1 | Engine: SSRF-safe fetch, checks, `toPreview`, `POST /api/audit/preview`, unit tests (`npm test`) | ✅ Done (Turnstile check added in Phase 3) |
 | 2 | PageSpeed Insights + staged progress UI | — |
-| — | **Design:** Sheet 09 · Audit in the Claude Design project (blocks the `/audit` UI) | Waiting on design |
+| — | **Design:** Sheet 09 · Audit (canvas), documented in `design-system/04-screens.md` | ✅ Done |
+| 2b | `/audit` page: URL form, scanning state, results, "What this means for you", findings list, full-audit panel (mailto and Calendly for now) | ✅ Built; not yet checked in a browser |
 | 3 | Lead capture: Turnstile, private dataset, request form, review page, emails | — |
 | 3b | Shareable snapshots, OG score card, view tracking, first-open email | — |
 | 4 | Full audit: Grok, report page, delivery email | — |
@@ -98,4 +99,5 @@ A shared link emails Jovanni the first time it's opened ("lead opened your audit
 
 ## Design notes
 
-- Severity colors: `--color-danger` for critical; warning and info use neutral text plus an icon. Blue, amber and green stay reserved for build status, and amber for the single CTA.
+- Severity colors: `--color-danger` for critical; warning and info use neutral text plus an icon. Blue, amber and green stay reserved for build status.
+- Amber: the results view has two primary buttons ("Get the full audit" and "Book a call"), an intentional exception to "one amber button per view" for the audit pages only. See Sheet 09 in `design-system/04-screens.md`.

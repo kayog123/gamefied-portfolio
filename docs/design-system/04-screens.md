@@ -190,6 +190,34 @@ The progress bar in the top bar updates, with the new percent in green.
 
 **Mobile (8b):** a 38px H1, a single column, and the architecture diagram as a vertical stack.
 
+## 09 · Website audit
+
+**Purpose:** a free, passive website audit that doubles as a lead funnel (flow, checks and data: [AUDIT.md](../AUDIT.md)). Route `/audit`, a `(site)` page on the content-page grid. Designed on its own canvas, "Sheet 09 · Website Audit" (not yet in the Blueprint project). Built from Sheet 00 parts (`Button`, `panel-ticks`), the mono eyebrow → headline → lead pattern, and "Stat + bar + label".
+
+**Screens**
+
+| Board | What it shows |
+|-------|---------------|
+| 09a / 09b Results | Desktop: 3 score cards → **"What this means for you"** → findings list beside the full-audit panel. Mobile stacks the same flow |
+| 09c Start · scanning · error | Hero + URL field; a progress panel with a step log; a red field with an alert message |
+| 09d Request | Modal: name, email, optional focus, consent, Turnstile. Sent state lists the 3 next steps (Phase 3) |
+| 09e Shared link | Snapshot of the results with an optional `PREPARED FOR [COMPANY]` tag, expiry date, and an expired state (Phase 3b) |
+| 09f Share image | 1200×630 link-preview card: domain, 3 scores, critical and locked counts (Phase 3b) |
+
+**Results**
+
+- **Score cards:** category label, a 48px mono score with `/100` in glow at 40% size, a 4px bar, and "N of M checks need work". Colour is not used for the score (the bar is always glow), so the number and caption carry the meaning.
+- **What this means for you:** sits **above the findings** because most viewers are non-technical. A 30px verdict headline, a lead sentence, and one card per category with a mono status label (`NEEDS ATTENTION` red-bordered, `WORTH FIXING` neutral, `IN GOOD SHAPE` blue). Closing row: "Email me about these results" (secondary) and "Book a call to walk through it" (primary). Copy is picked by code from scores and counts (`content/audit-page.ts`, `features/audit/audit.summary.ts`); it never names a locked finding.
+- **Findings:** failing checks only, most severe first, locked ahead of open within a severity. Filter buttons (`aria-pressed`) for All / SEO / Security / Maintainability. Open rows are disclosure buttons that expand to two columns, "WHY IT MATTERS" and "HOW TO FIX". Locked rows show a lock tile, title, severity tag, two skeleton bars and "The cause and the fix are part of the full audit." Nothing locked is in the DOM.
+- **Severity:** only `critical` uses colour (`danger` tag). Warnings use a triangle icon with neutral text, notices an info icon. Blue / amber / green keep their status meaning and are not used for severity.
+- **Full-audit panel:** four-tick panel, `FULL AUDIT` eyebrow, "N findings are locked, including a critical issue", four diamond bullets, one primary button "Get the full audit".
+
+**Exception to "one amber button per view":** the results view has **two** primary (amber) buttons, "Get the full audit" and "Book a call to walk through it", because both are lead actions. "Email me", "Audit again" and the top bar's "Talk to me" stay secondary. This applies to the audit pages only.
+
+**Scanning:** a percent readout (an estimate eased from elapsed time, labelled "Progress is an estimate"), a bar and a four-step log. `role="status"` / `aria-live="polite"`. The bar width transition is disabled under `prefers-reduced-motion`.
+
+**Not built yet:** the Performance (PageSpeed) card, the request modal, the shared-link page and its share image.
+
 ---
 
 ## Sample data
