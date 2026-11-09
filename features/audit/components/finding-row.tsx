@@ -1,22 +1,8 @@
 import { ChevronDown, Info, Lock, TriangleAlert } from 'lucide-react';
 import { CATEGORY_INFO } from '@/content/audit-page';
 import { cn } from '@/lib/cn';
-import type { PreviewFinding, Severity } from '@/types/audit';
-
-const SEVERITY_LABEL: Record<Severity, string> = { critical: 'CRITICAL', warning: 'WARNING', info: 'NOTICE' };
-
-function SeverityTag({ severity }: { severity: Severity }) {
-  return (
-    <span
-      className={cn(
-        'rounded-tag px-1.5 py-0.5 font-mono text-[10px] tracking-label',
-        severity === 'critical' ? 'border border-danger/40 bg-danger/12 text-danger-text' : 'border border-muted/40 text-text-soft',
-      )}
-    >
-      {SEVERITY_LABEL[severity]}
-    </span>
-  );
-}
+import type { PreviewFinding } from '@/types/audit';
+import { SEVERITY_LABEL, SeverityTag } from './severity-tag';
 
 export type FindingRowProps = {
   finding: PreviewFinding;

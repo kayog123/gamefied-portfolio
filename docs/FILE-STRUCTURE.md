@@ -30,7 +30,8 @@ fullstack-portfolio/
 │  │  ├─ layout.tsx              # Site top bar + footer
 │  │  ├─ audit/
 │  │  │  ├─ page.tsx             # "/audit"  (09 Website audit: free scan + results)
-│  │  │  ├─ review/[requestId]/page.tsx   # private, noindex, signed link (Jovanni only)
+│  │  │  ├─ review/[requestId]/page.tsx   # private, noindex, signed link (Jovanni only): run / send the full audit
+│  │  │  ├─ report/[requestId]/page.tsx   # private, noindex, signed link: the full report the requester reads
 │  │  │  └─ s/[shareId]/{page,opengraph-image}.tsx   # shared audit snapshot (noindex) + its link-preview image
 │  │  ├─ process/
 │  │  │  └─ page.tsx             # "/process"  (client process, discovery call → delivery, + FAQ)
@@ -70,7 +71,7 @@ fullstack-portfolio/
 │  │  ├─ hooks/ (use-blueprint-generation.ts)
 │  │  ├─ server/ (generate-blueprint.ts, prompt.ts, fallback.ts)   # server-only
 │  │  └─ index.ts
-│  ├─ audit/                     # Website audit (docs/AUDIT.md): components/ (scanner, results, findings), hooks/use-audit-scan.ts, server/ (SSRF-safe fetch, checks/, run-audit.ts), audit.utils.ts (scoring, toPreview), audit.summary.ts
+│  ├─ audit/                     # Website audit (full report: server/full-audit.ts, build-report.ts, full-audit-prompt.ts; components/full-report.tsx) (docs/AUDIT.md): components/ (scanner, results, findings), hooks/use-audit-scan.ts, server/ (SSRF-safe fetch, checks/, run-audit.ts), audit.utils.ts (scoring, toPreview), audit.summary.ts
 │  ├─ blog/                      # Blog: components/, server/ (Sanity reads), studio/ (schemas, imported only by sanity.config.ts)
 │  ├─ city/                      # Shared isometric City scene (all modes)
 │  │  ├─ components/ (city-scene.tsx, building.tsx, building-label.tsx)

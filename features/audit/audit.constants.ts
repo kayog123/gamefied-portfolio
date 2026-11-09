@@ -30,3 +30,13 @@ export const SNAPSHOT_TTL_DAYS = 30;
 /** The same URL shared again within this window reuses the existing snapshot, so one visitor can't mint unlimited documents. */
 export const SNAPSHOT_REUSE_HOURS = 24;
 export const SHARE_ID_LENGTH = 10;
+
+// Full audit (Phase 4, docs/AUDIT.md#full-audit-phase-4)
+/** How long a report link works after it is generated or sent. Edit `reportExpiresAt` in Studio to end one early. */
+export const REPORT_LINK_TTL_SECONDS = 30 * 24 * 60 * 60;
+/** Total time the server may spend on one run (the page's `maxDuration` is 60 s). Grok gets whatever is left after the checks. */
+export const REPORT_RUN_BUDGET_MS = 55_000;
+/** The AI is skipped (deterministic report) if less than this remains after the checks. */
+export const MIN_AI_BUDGET_MS = 10_000;
+/** A run still marked "running" after this long was cut off (e.g. the function timed out), so it can be started again. */
+export const REPORT_RUN_STALE_MS = 5 * 60 * 1000;

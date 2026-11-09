@@ -1,8 +1,17 @@
 import 'server-only';
 import { createClient } from 'next-sanity';
 import type { AuditPreview } from '@/types/audit';
-import type { AuditRequestRecord, AuditRequestStatus, AuditSnapshotRecord, PreviewSummary } from '../audit.types';
-import { PENDING_REQUEST_QUERY, RECENT_SNAPSHOT_QUERY, REQUEST_BY_ID_QUERY, SNAPSHOT_BY_ID_QUERY } from './audit-queries';
+import type { AuditRequestRecord, AuditRequestStatus, AuditSnapshotRecord, FullAuditReport, PreviewSummary } from '../audit.types';
+import { isRunStale } from '../audit.utils';
+import {
+  CLAIM_RUN_QUERY,
+  PENDING_REQUEST_QUERY,
+  RECENT_SNAPSHOT_QUERY,
+  REPORT_BY_ID_QUERY,
+  REQUEST_BY_ID_QUERY,
+  SNAPSHOT_BY_ID_QUERY,
+} from './audit-queries';
+import { parseReportJson } from './report-schema';
 import { parsePreviewJson } from './snapshot-schema';
 
 /**
@@ -34,6 +43,15 @@ type RequestDoc = {
   status: AuditRequestStatus;
   previewSummary?: PreviewSummary | null;
   sharedFrom?: string;
+  reportGeneratedAt?: string;
+  reportModel?: string;
+  reportUsedAi?: boolean;
+  tokensUsed?: number;
+  reportExpiresAt?: string;
+  sentAt?: string;
+  sendError?: string;
+  reportError?: string;
+  reportStartedAt?: string;
 };
 
 function toRecord(doc: RequestDoc): AuditRequestRecord {
@@ -48,6 +66,19 @@ function toRecord(doc: RequestDoc): AuditRequestRecord {
     status: doc.status,
     previewSummary: doc.previewSummary ?? null,
     sharedFrom: doc.sharedFrom ?? null,
+    report: doc.reportGeneratedAt
+      ? {
+          generatedAt: doc.reportGeneratedAt,
+          usedAi: doc.reportUsedAi ?? false,
+          model: doc.reportModel ?? null,
+          tokensUsed: doc.tokensUsed ?? null,
+          expiresAt: doc.reportExpiresAt ?? null,
+          sentAt: doc.sentAt ?? null,
+          sendError: doc.sendError ?? null,
+        }
+      : null,
+    reportError: doc.reportError ?? null,
+    runStartedAt: doc.reportStartedAt ?? null,
   };
 }
 
@@ -166,4 +197,95 @@ export async function recordSnapshotView(shareId: string): Promise<{ views: numb
     .set({ lastViewedAt: new Date().toISOString() })
     .commit<{ views: number; domain: string; preparedFor?: string }>();
   return { views: doc.views, domain: doc.domain, preparedFor: doc.preparedFor?.trim() || null };
+}
+
+// ── Full audit reports (on the auditRequest document) ───────────────────────
+
+/**
+ * Takes the "right to run" for a request, or returns false if another run already holds it. A compare-and-set on
+ * the document's revision, so two clicks (or two tabs) can't start two runs and spend the AI twice. A run that
+ * has been "running" for over five minutes was cut off, so it can be started again.
+ */
+export async function claimReportRun(id: string, now: number = Date.now()): Promise<boolean> {
+  if (!client) return false;
+  const doc = await client.fetch<{ _rev: string; status: AuditRequestStatus; reportStartedAt?: string } | null>(CLAIM_RUN_QUERY, { id });
+  if (!doc) return false;
+  if (doc.status === 'running' && !isRunStale(doc.reportStartedAt, now)) return false;
+
+  try {
+    await client
+      .patch(id)
+      .ifRevisionId(doc._rev)
+      .set({ status: 'running' satisfies AuditRequestStatus, reportStartedAt: new Date(now).toISOString() })
+      .unset(['reportError'])
+      .commit();
+    return true;
+  } catch {
+    // The revision changed under us: someone else got there first.
+    return false;
+  }
+}
+
+export type SavedReport = {
+  report: FullAuditReport;
+  usedAi: boolean;
+  tokensUsed: number | null;
+  /** After this the report link stops working. */
+  expiresAt: string;
+};
+
+/** Stores a finished report and marks the request completed. Replaces any earlier report. */
+export async function saveReport(id: string, { report, usedAi, tokensUsed, expiresAt }: SavedReport): Promise<void> {
+  if (!client) throw new Error('Audit store is not configured.');
+  await client
+    .patch(id)
+    .set({
+      status: 'completed' satisfies AuditRequestStatus,
+      reportJson: JSON.stringify(report),
+      reportGeneratedAt: report.generatedAt,
+      reportUsedAi: usedAi,
+      reportModel: report.model ?? '',
+      reportExpiresAt: expiresAt,
+      ...(tokensUsed !== null ? { tokensUsed } : {}),
+    })
+    .unset(['reportError', 'reportStartedAt', 'sendError'])
+    .commit();
+}
+
+export async function saveReportFailure(id: string, message: string): Promise<void> {
+  if (!client) throw new Error('Audit store is not configured.');
+  await client.patch(id).set({ status: 'failed' satisfies AuditRequestStatus, reportError: message }).unset(['reportStartedAt']).commit();
+}
+
+export type StoredReport = {
+  id: string;
+  domain: string;
+  name: string;
+  email: string;
+  report: FullAuditReport;
+  expiresAt: string | null;
+};
+
+/** `null` when there is no report, or what is stored isn't a valid report (it can be edited in Studio). */
+export async function getStoredReport(id: string): Promise<StoredReport | null> {
+  if (!client) return null;
+  const doc = await client.fetch<{ _id: string; domain: string; name: string; email: string; reportJson?: string; reportExpiresAt?: string } | null>(
+    REPORT_BY_ID_QUERY,
+    { id },
+  );
+  if (!doc) return null;
+  const report = parseReportJson(doc.reportJson);
+  if (!report) return null;
+  return { id: doc._id, domain: doc.domain, name: doc.name, email: doc.email, report, expiresAt: doc.reportExpiresAt ?? null };
+}
+
+/** Records that the report was emailed, and restarts its link validity from now. */
+export async function markReportSent(id: string, expiresAt: string): Promise<void> {
+  if (!client) throw new Error('Audit store is not configured.');
+  await client.patch(id).set({ sentAt: new Date().toISOString(), reportExpiresAt: expiresAt }).unset(['sendError']).commit();
+}
+
+export async function markReportSendFailed(id: string, message: string): Promise<void> {
+  if (!client) throw new Error('Audit store is not configured.');
+  await client.patch(id).set({ sendError: message }).commit();
 }

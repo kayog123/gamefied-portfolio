@@ -8,7 +8,7 @@ import type {
   PreviewFinding,
   SeverityCounts,
 } from '@/types/audit';
-import { AUDIT_CATEGORIES, MAX_AUDIT_URL_LENGTH, SEVERITY_WEIGHT } from './audit.constants';
+import { AUDIT_CATEGORIES, MAX_AUDIT_URL_LENGTH, REPORT_RUN_STALE_MS, SEVERITY_WEIGHT } from './audit.constants';
 
 /**
  * Turns what a visitor typed ("example.com", "https://example.com/pricing#faq") into an
@@ -127,4 +127,13 @@ export function isValidShareId(value: string): boolean {
 export function isExpired(expiresAtIso: string, now: number = Date.now()): boolean {
   const expiresAt = Date.parse(expiresAtIso);
   return Number.isNaN(expiresAt) || expiresAt <= now;
+}
+
+/**
+ * A run stuck on "running" is one the server never finished (the function was cut off). After
+ * `staleAfterMs` it may be started again. A missing or unparseable start time counts as stale.
+ */
+export function isRunStale(startedAtIso: string | null | undefined, now: number = Date.now(), staleAfterMs: number = REPORT_RUN_STALE_MS): boolean {
+  const startedAt = startedAtIso ? Date.parse(startedAtIso) : Number.NaN;
+  return Number.isNaN(startedAt) || now - startedAt >= staleAfterMs;
 }

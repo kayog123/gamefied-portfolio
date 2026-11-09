@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { PENDING_REQUEST_QUERY, RECENT_SNAPSHOT_QUERY, REQUEST_BY_ID_QUERY, SNAPSHOT_BY_ID_QUERY } from './audit-queries';
+import {
+  CLAIM_RUN_QUERY,
+  PENDING_REQUEST_QUERY,
+  RECENT_SNAPSHOT_QUERY,
+  REPORT_BY_ID_QUERY,
+  REQUEST_BY_ID_QUERY,
+  SNAPSHOT_BY_ID_QUERY,
+} from './audit-queries';
 
 /**
  * Runs the store's real GROQ against fake documents with Sanity's own query engine, since there is no dataset to
@@ -92,5 +99,45 @@ describe.skipIf(!groq)('audit store queries (run with groq-js)', () => {
       expect(await run(SNAPSHOT_BY_ID_QUERY, dataset, { id: 'auditSnapshot-abc1234567' })).toMatchObject({ shareId: 'abc1234567' });
       expect(await run(SNAPSHOT_BY_ID_QUERY, dataset, { id: 'abc1234567' })).toBeNull();
     });
+  });
+});
+
+// ── Full audit (Phase 4) ─────────────────────────────────────────────────────
+
+describe.skipIf(!groq)('full-audit queries (run with groq-js)', () => {
+  const request = {
+    _id: 'req1',
+    _type: 'auditRequest',
+    _createdAt: NOW,
+    _rev: 'rev-abc',
+    url: 'https://example.com/',
+    domain: 'example.com',
+    name: 'Maria',
+    email: 'maria@example.com',
+    status: 'completed',
+    reportGeneratedAt: NOW,
+    reportUsedAi: true,
+    reportModel: 'grok-test',
+    tokensUsed: 4321,
+    reportExpiresAt: DAYS_FROM_NOW(30),
+    reportJson: '{"big":"report"}',
+  };
+
+  it('REQUEST_BY_ID_QUERY returns the report metadata but never the report itself', async () => {
+    const found = (await run(REQUEST_BY_ID_QUERY, [request], { id: 'req1' })) as Doc;
+    expect(found).toMatchObject({ reportGeneratedAt: NOW, reportUsedAi: true, reportModel: 'grok-test', tokensUsed: 4321 });
+    expect(found).not.toHaveProperty('reportJson');
+  });
+
+  it('CLAIM_RUN_QUERY returns the revision and the run state', async () => {
+    const running = { ...request, status: 'running', reportStartedAt: NOW };
+    expect(await run(CLAIM_RUN_QUERY, [running], { id: 'req1' })).toEqual({ _rev: 'rev-abc', status: 'running', reportStartedAt: NOW });
+    expect(await run(CLAIM_RUN_QUERY, [running], { id: 'other' })).toBeNull();
+  });
+
+  it('REPORT_BY_ID_QUERY returns the stored report and its expiry', async () => {
+    const found = (await run(REPORT_BY_ID_QUERY, [request], { id: 'req1' })) as Doc;
+    expect(found).toMatchObject({ _id: 'req1', domain: 'example.com', reportJson: '{"big":"report"}', reportExpiresAt: DAYS_FROM_NOW(30) });
+    expect(await run(REPORT_BY_ID_QUERY, [{ ...request, _type: 'auditSnapshot' }], { id: 'req1' })).toBeNull();
   });
 });

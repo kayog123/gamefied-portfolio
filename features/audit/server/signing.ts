@@ -1,10 +1,10 @@
 import 'server-only';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { SITE_URL } from '@/lib/site';
-import { REVIEW_LINK_TTL_SECONDS, SCAN_TICKET_TTL_SECONDS } from '../audit.constants';
+import { REPORT_LINK_TTL_SECONDS, REVIEW_LINK_TTL_SECONDS, SCAN_TICKET_TTL_SECONDS } from '../audit.constants';
 
 /** What a token is for. It's part of the signed text, so a scan ticket can't be replayed as a review link. */
-export type TokenPurpose = 'review' | 'scan';
+export type TokenPurpose = 'review' | 'scan' | 'report';
 
 /** Thrown in production when `AUDIT_SIGNING_SECRET` is missing or too short, so we fail closed. */
 export class SigningUnavailableError extends Error {
@@ -60,4 +60,10 @@ export function createScanTicket(url: string): string {
 
 export function verifyScanTicket(url: string, ticket: string | null | undefined): boolean {
   return verifyToken('scan', url, ticket);
+}
+
+/** Absolute, signed link to the private report page (docs/AUDIT.md#full-audit-phase-4). Valid 30 days. */
+export function createReportUrl(requestId: string): string {
+  const token = signToken('report', requestId, REPORT_LINK_TTL_SECONDS);
+  return `${SITE_URL}/audit/report/${encodeURIComponent(requestId)}?token=${token}`;
 }

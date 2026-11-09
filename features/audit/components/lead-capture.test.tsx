@@ -16,6 +16,9 @@ const record: AuditRequestRecord = {
   status: 'pending',
   previewSummary: { scores: { seo: 50, security: 45, maintainability: 91 }, counts: { critical: 1, warning: 7, info: 7 }, lockedCount: 3 },
   sharedFrom: null,
+  report: null,
+  reportError: null,
+  runStartedAt: null,
 };
 
 describe('RequestDialog', () => {
@@ -52,30 +55,31 @@ describe('FullAuditPanel', () => {
 
 describe('ReviewPanel', () => {
   it('shows the request with the signed token only inside the action forms', () => {
-    const html = renderToStaticMarkup(<ReviewPanel request={record} token="1799999999.sig" />);
+    const html = renderToStaticMarkup(<ReviewPanel request={record} token="1799999999.sig" reportUrl={null} />);
     expect(html).toContain('example.com');
     expect(html).toContain('mailto:maria@example.com');
     expect(html).toContain('SEO');
     expect(html).toContain('3 locked');
     expect(html).toContain('Mark contacted');
     expect(html).toContain('Decline');
-    expect((html.match(/name="token"/g) ?? []).length).toBe(2);
+    // Run full audit + Mark contacted + Decline. The token lives only in those hidden fields.
+    expect((html.match(/name="token"/g) ?? []).length).toBe(3);
   });
 
   it('escapes a hostile message instead of rendering it', () => {
-    const html = renderToStaticMarkup(<ReviewPanel request={{ ...record, message: '<script>alert(1)</script>' }} token="t" />);
+    const html = renderToStaticMarkup(<ReviewPanel request={{ ...record, message: '<script>alert(1)</script>' }} token="t" reportUrl={null} />);
     expect(html).not.toContain('<script>alert(1)</script>');
     expect(html).toContain('&lt;script&gt;');
   });
 
   it('drops the action buttons once a request is declined', () => {
-    const html = renderToStaticMarkup(<ReviewPanel request={{ ...record, status: 'declined' }} token="t" />);
+    const html = renderToStaticMarkup(<ReviewPanel request={{ ...record, status: 'declined' }} token="t" reportUrl={null} />);
     expect(html).toContain('DECLINED');
     expect(html).not.toContain('Mark contacted');
   });
 
   it('copes with a request that has no scan summary', () => {
-    const html = renderToStaticMarkup(<ReviewPanel request={{ ...record, previewSummary: null }} token="t" />);
+    const html = renderToStaticMarkup(<ReviewPanel request={{ ...record, previewSummary: null }} token="t" reportUrl={null} />);
     expect(html).toContain('free scan wasn&#x27;t available');
   });
 });

@@ -27,12 +27,25 @@ const ALL_CHECKS = [...SEO_CHECKS, ...SECURITY_CHECKS, ...MAINTAINABILITY_CHECKS
 export async function runAudit(url: string): Promise<AuditOutcome> {
   'use cache';
 
+  const outcome = await execute(url);
+  // One cacheLife call per invocation: a good result is reused for about a day, a failure for seconds.
+  if (outcome.ok) cacheLife('days');
+  else cacheLife('seconds');
+  return outcome;
+}
+
+/**
+ * The same checks, never cached. The full audit uses this so the report describes the site as it is
+ * when Jovanni runs it, not as it was when the visitor did the free scan.
+ */
+export function runAuditUncached(url: string): Promise<AuditOutcome> {
+  return execute(url);
+}
+
+async function execute(url: string): Promise<AuditOutcome> {
   try {
-    const result = await audit(new URL(url));
-    cacheLife('days');
-    return { ok: true, result };
+    return { ok: true, result: await audit(new URL(url)) };
   } catch (error) {
-    cacheLife('seconds');
     if (error instanceof BlockedUrlError) return { ok: false, reason: 'blocked', message: error.message };
     if (error instanceof NotHtmlError) return { ok: false, reason: 'not-html', message: error.message };
     if (error instanceof FetchFailedError) return { ok: false, reason: 'unreachable', message: error.message };

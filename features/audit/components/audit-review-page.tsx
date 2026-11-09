@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { PageWrapper } from '@/components/layout/page-wrapper';
 import { Button } from '@/components/blueprint';
@@ -6,9 +7,12 @@ import { cn } from '@/lib/cn';
 import { CATEGORY_INFO } from '@/content/audit-page';
 import type { AuditRequestRecord, AuditRequestStatus } from '../audit.types';
 import { AUDIT_CATEGORIES } from '../audit.constants';
+import { isRunStale } from '../audit.utils';
 import { getAuditRequest } from '../server/audit-store';
-import { updateReviewStatusAction } from '../server/review.actions';
-import { SigningUnavailableError, verifyToken } from '../server/signing';
+import { runFullAuditAction, sendReportAction, updateReviewStatusAction } from '../server/review.actions';
+import { createReportUrl, SigningUnavailableError, verifyToken } from '../server/signing';
+import { AutoRefresh } from './auto-refresh';
+import { CopyField } from './copy-field';
 
 const STATUS_LABEL: Record<AuditRequestStatus, string> = {
   pending: 'PENDING',
@@ -40,6 +44,9 @@ export function AuditReviewPage(props: AuditReviewPageProps) {
 }
 
 async function ReviewContent({ params, searchParams }: AuditReviewPageProps) {
+  // Always request-time: access depends on a secret token and an expiry. Without this, Cache Components' dev
+  // check treats params and searchParams as predictable and rejects the Date.now() inside token verification.
+  await connection();
   const [{ requestId }, { token: rawToken }] = await Promise.all([params, searchParams]);
   const token = Array.isArray(rawToken) ? rawToken[0] : rawToken;
 
@@ -54,12 +61,33 @@ async function ReviewContent({ params, searchParams }: AuditReviewPageProps) {
   const request = await getAuditRequest(requestId);
   if (!request) notFound();
 
-  return <ReviewPanel request={request} token={token} />;
+  // The report link is signed, not stored, so it can be shown again (fresh for 30 days) every time this page loads.
+  let reportUrl: string | null = null;
+  if (request.report) {
+    try {
+      reportUrl = createReportUrl(requestId);
+    } catch (error) {
+      if (!(error instanceof SigningUnavailableError)) throw error;
+    }
+  }
+
+  return <ReviewPanel request={request} token={token} reportUrl={reportUrl} />;
 }
 
-export function ReviewPanel({ request, token }: { request: AuditRequestRecord; token: string }) {
-  const { previewSummary: summary } = request;
+const formatDateTime = (iso: string) => new Date(iso).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' });
+
+export type ReviewPanelProps = {
+  request: AuditRequestRecord;
+  token: string;
+  /** Signed link to the finished report; null while there is no report. */
+  reportUrl: string | null;
+};
+
+export function ReviewPanel({ request, token, reportUrl }: ReviewPanelProps) {
+  const { previewSummary: summary, report } = request;
   const isOpen = request.status === 'pending' || request.status === 'contacted';
+  // A run that was cut off (the function timed out) stays "running" in the store; after five minutes it can be started again.
+  const isRunning = request.status === 'running' && !isRunStale(request.runStartedAt);
 
   return (
     <div className="flex max-w-[860px] flex-col gap-8 px-5 py-12 md:px-12 md:py-16">
@@ -135,9 +163,85 @@ export function ReviewPanel({ request, token }: { request: AuditRequestRecord; t
         )}
       </section>
 
+      <section aria-labelledby="full-audit" className="panel-ticks flex flex-col gap-4 p-5 md:p-6">
+        <h2 id="full-audit" className="font-mono text-[11px] tracking-label text-muted">
+          FULL AUDIT
+        </h2>
+
+        {isRunning ? (
+          <p role="status" className="font-sans text-sm text-text-soft">
+            Running: fresh checks first, then the Grok analysis. This page refreshes by itself.
+          </p>
+        ) : request.status === 'failed' && request.reportError ? (
+          <p role="alert" className="font-sans text-sm text-danger-text">
+            {request.reportError}
+          </p>
+        ) : report ? (
+          <div className="flex flex-col gap-3">
+            <p className="font-sans text-sm leading-[1.55] text-text-soft">
+              Generated {formatDateTime(report.generatedAt)} UTC ·{' '}
+              {report.usedAi ? (
+                <>
+                  analysis by <span className="font-mono text-xs text-text-strong">{report.model}</span>
+                  {report.tokensUsed !== null && <> · {report.tokensUsed.toLocaleString('en-US')} tokens</>}
+                </>
+              ) : (
+                <strong className="font-semibold text-text-strong">AI analysis was unavailable, so this is the standard report (same findings, standard wording)</strong>
+              )}
+            </p>
+            {reportUrl && (
+              <>
+                <CopyField label="Report link" value={reportUrl} />
+                <p className="font-sans text-xs text-muted">
+                  <a href={reportUrl} target="_blank" rel="noopener noreferrer" className="focus-blueprint text-glow-soft hover:text-glow-pale">
+                    Open the report
+                  </a>{' '}
+                  to read exactly what {request.name} will see. Nothing has been sent to them yet unless it says so below.
+                </p>
+              </>
+            )}
+            {report.sentAt && (
+              <p className="font-sans text-sm text-live-text">
+                Sent to {request.email} on {formatDateTime(report.sentAt)} UTC.
+              </p>
+            )}
+            {report.sendError && (
+              <p role="alert" className="font-sans text-sm text-danger-text">
+                Couldn&apos;t email it: {report.sendError} Copy the link above and send it yourself.
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="font-sans text-sm leading-[1.55] text-muted">
+            Runs fresh checks on {request.domain} and asks Grok for the analysis. It costs tokens, so it only runs when you press the button.
+            You read the report before anything is sent to {request.name}.
+          </p>
+        )}
+
+        <div className="flex flex-wrap items-center gap-3">
+          <form action={runFullAuditAction}>
+            <input type="hidden" name="requestId" value={request.id} />
+            <input type="hidden" name="token" value={token} />
+            <Button type="submit" disabled={isRunning}>
+              {isRunning ? 'Running…' : report ? 'Re-run full audit' : 'Run full audit'}
+            </Button>
+          </form>
+          {report && !isRunning && (
+            <form action={sendReportAction}>
+              <input type="hidden" name="requestId" value={request.id} />
+              <input type="hidden" name="token" value={token} />
+              <Button type="submit" variant="secondary">
+                {report.sentAt ? 'Send it again' : `Send report to ${request.email}`}
+              </Button>
+            </form>
+          )}
+        </div>
+        {isRunning && <AutoRefresh />}
+      </section>
+
       <section aria-labelledby="actions" className="flex flex-col gap-4 border-t border-grid pt-6">
         <h2 id="actions" className="font-mono text-[11px] tracking-label text-muted">
-          WHAT NEXT
+          OTHER
         </h2>
         <div className="flex flex-wrap items-center gap-3">
           <Button href={`mailto:${request.email}?subject=${encodeURIComponent(`Your website audit: ${request.domain}`)}`} variant="secondary">
@@ -149,7 +253,7 @@ export function ReviewPanel({ request, token }: { request: AuditRequestRecord; t
                 <input type="hidden" name="requestId" value={request.id} />
                 <input type="hidden" name="token" value={token} />
                 <input type="hidden" name="intent" value="contacted" />
-                <Button type="submit" disabled={request.status === 'contacted'}>
+                <Button type="submit" variant="secondary" disabled={request.status === 'contacted'}>
                   {request.status === 'contacted' ? 'Marked contacted' : 'Mark contacted'}
                 </Button>
               </form>
@@ -164,10 +268,7 @@ export function ReviewPanel({ request, token }: { request: AuditRequestRecord; t
             </>
           )}
         </div>
-        <p className="font-sans text-xs leading-[1.5] text-muted">
-          Running the full audit with Grok isn&apos;t built yet (Phase 4). For now, reply to them directly. This link works for 7 days after the
-          request and only shows or updates this one request.
-        </p>
+        <p className="font-sans text-xs leading-[1.5] text-muted">This link works for 7 days after the request and only shows or updates this one request.</p>
       </section>
     </div>
   );

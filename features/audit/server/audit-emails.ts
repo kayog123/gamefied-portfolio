@@ -1,5 +1,6 @@
 import 'server-only';
 import { sendEmail, type SendResult } from '@/lib/email/send-email';
+import { BOOK_A_CALL_URL, SOCIAL_LINKS } from '@/lib/site';
 import type { PreviewSummary } from '../audit.types';
 
 export type RequestEmail = {
@@ -53,6 +54,32 @@ export function sendSnapshotOpenedEmail({ domain, preparedFor, shareUrl }: { dom
       shareUrl,
       '',
       'This is a best-effort signal: link-preview bots are filtered out, but some email scanners can still look like a visit.',
+    ].join('\n'),
+  });
+}
+
+/**
+ * Sends the finished report to the person who asked for it. `Reply-To` is Jovanni, so "Reply" reaches him.
+ * With Resend's shared sender this only delivers to the account owner, so until a domain is verified
+ * (`CONTACT_FROM_EMAIL`) it fails and the review page shows the link to send by hand.
+ */
+export function sendReportEmail({ to, name, domain, reportUrl }: { to: string; name: string; domain: string; reportUrl: string }): Promise<SendResult> {
+  const firstName = oneLine(name).split(' ')[0] || 'there';
+  return sendEmail({
+    to,
+    replyTo: process.env.CONTACT_TO_EMAIL ?? SOCIAL_LINKS.email,
+    subject: `Your website audit for ${oneLine(domain)}`,
+    text: [
+      `Hi ${firstName},`,
+      '',
+      `The full audit of ${oneLine(domain)} is ready:`,
+      reportUrl,
+      '',
+      'It includes every finding with what it means and how to fix it, plus a suggested order to tackle them in. The link works for 30 days.',
+      '',
+      `If you would like me to walk you through it, just reply to this email or book a call: ${BOOK_A_CALL_URL}`,
+      '',
+      'Jovanni Jungco',
     ].join('\n'),
   });
 }
