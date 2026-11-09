@@ -55,7 +55,7 @@ The blog dataset may be public. Audit data contains emails, so it lives in a sep
 | Type | Fields |
 |------|--------|
 | `auditRequest` | url, domain, name, email, message, consent, createdAt, status (`pending · running · completed · failed · contacted · declined`), previewSummary, report, model, tokensUsed, reportTokenHash, reportExpiresAt, snapshot (ref), error |
-| `auditSnapshot` | shareId, url, domain, createdAt, expiresAt, preview (public view only), preparedFor (Studio only), source (`visitor · outreach`), views, lastViewedAt |
+| `auditSnapshot` | shareId, url, domain, expiresAt, previewJson (the public preview projection as JSON, read back through a strict zod schema), preparedFor (editable in Studio only), views, lastViewedAt |
 
 ## Links
 
@@ -65,7 +65,15 @@ The blog dataset may be public. Audit data contains emails, so it lives in a sep
 | `/audit/review/<id>?sig=` | Jovanni | HMAC (`AUDIT_SIGNING_SECRET`); GET only displays, POST Server Action re-verifies | 7 days |
 | `/audit/report/<token>` | The requester | 32-byte random token, only its hash stored, noindex | 30 days |
 
-A shared link emails Jovanni the first time it's opened ("lead opened your audit"). Views are counted in `after()`.
+## Shared audits (Phase 3b)
+
+- **Create:** "Create share link" on the results calls `POST /api/audit/share` with the scan ticket. The server re-runs the checks itself, stores only the public preview (`toPreview`), and returns `/audit/s/<shareId>`. The browser never supplies results, so nobody can publish forged scores under this domain. The same URL shared again within 24 h reuses its snapshot, which bounds how many documents one visitor can create.
+- **Link:** 10 random URL-safe characters, noindex, disallowed in `robots.txt`, valid 30 days (`expiresAt`, editable in Studio to extend or end a link). An expired link shows "This audit is out of date" with a button to run a fresh one.
+- **Page:** read-only results (scores, "What this means", findings, full-audit panel). No speed card and no share button. "Get the full audit" works from here and records the share ID on the request ("Came from …" on the review page and in the email).
+- **Personalising:** set `preparedFor` on the snapshot in `/studio/audits`. The page shows "PREPARED FOR …" (escaped, max 80 characters), and **only those links** email Jovanni the first time they are opened. Visitor-created links never email, so someone sharing their score with a colleague isn't noise. `preparedFor` is deliberately not settable from the page, so nobody can put arbitrary text under this domain.
+- **Views:** counted in `after()`, atomically (`inc`), so exactly one caller sees `views === 1`. Link-preview bots (Slack, WhatsApp, LinkedIn, Facebook, X, Discord, Googlebot, curl, headless browsers), requests without a user agent and prefetches are not counted. This is a heuristic: some email scanners and unfurlers will slip through, so the email is a hint, not proof.
+- **Share image:** `opengraph-image` draws a 1200×630 card (domain, three scores, critical and locked counts) from the stored preview only. Unknown or unreadable IDs get a generic card, because crawlers cache whatever they receive. It uses the default font until a font file is added to the repo.
+- **Not shared:** the speed score. It is measured live, not stored.
 
 ## AI (full audit only)
 
@@ -111,7 +119,7 @@ A shared link emails Jovanni the first time it's opened ("lead opened your audit
 | — | **Design:** Sheet 09 · Audit (canvas), documented in `design-system/04-screens.md` | ✅ Done |
 | 2b | `/audit` page: URL form, scanning state, results, "What this means for you", findings list, full-audit panel (mailto and Calendly for now) | ✅ Built; not yet checked in a browser |
 | 3 | Lead capture: Turnstile on scan + request, private `audits` dataset, request dialog, signed review page, emails | ✅ Built; not yet run against real Sanity/Turnstile/Resend keys |
-| 3b | Shareable snapshots, OG score card, view tracking, first-open email | — |
+| 3b | Shareable snapshots, share image, view tracking, first-open email | ✅ Built; not yet run against a real Sanity dataset |
 | 4 | Full audit: Grok, report page, delivery email | — |
 | 5 | Polish: rate-limit rule, a11y, reduced motion, doc updates | — |
 

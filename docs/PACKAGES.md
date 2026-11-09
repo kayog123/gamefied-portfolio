@@ -33,6 +33,7 @@ What we depend on, why, and the rules for adding anything new. Related docs: [Go
 | `tailwindcss` (v4) | Styling. Tokens live in `@theme` (see `docs/design-system/tokens.css`) |
 | `@tailwindcss/turbopack` | Turbopack loader for Tailwind v4 CSS |
 | `eslint`, `eslint-config-next` | Linting (`core-web-vitals` + `typescript` presets) |
+| `groq-js` (not declared) | Used only by `audit-queries.test.ts` to run the audit store's GROQ against fake documents. It ships inside `sanity`, so it is a transitive dependency, and the test skips itself if it is missing. Declare it explicitly if that test becomes a hard requirement |
 | `vitest` (4.x) | Unit tests (`npm test`, config in `vitest.config.mts`, Node environment). Pinned to 4.x because Vitest 5 requires `@types/node` ≥ 22 and we're on 20. `server-only` is aliased to its empty stub so server modules can be tested |
 
 ---

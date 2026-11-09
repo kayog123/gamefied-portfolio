@@ -222,7 +222,11 @@ The progress bar in the top bar updates, with the new percent in green.
 
 **Review page (Jovanni only, not a visitor screen):** `/audit/review/…`, noindex. Who, their free-scan scores and counts, and "Reply by email" / "Mark contacted" / "Decline". Uses neutral mono labels for status; blue / amber / green stay reserved for build status.
 
-**Not built yet:** the shared-link page and its share image.
+**Share this audit (09a):** a secondary-button panel under the full-audit panel. "Create share link" → a read-only field with the link and "Copy link" (the label becomes "Copied" for 2 s). States: creating, ready, error (inline, `role="status"`). Shown only for a fresh scan, never on a shared page.
+
+**Shared page (09e):** `/audit/s/…`, noindex. Optional `PREPARED FOR [COMPANY]` tag (a 1px glow outline, mono), the H1 "Website audit of {domain}", a lead that says who ran it and when and that this is a preview, and "SNAPSHOT · LINK VALID UNTIL {date}". Below it the same results as the live page, minus the speed card and the share panel. Expired state: eyebrow `SHARED AUDIT · EXPIRED`, "This audit is out of date", and a primary "Run a fresh audit" button (it opens `/audit`; the domain is not pre-filled).
+
+**Share image (09f):** 1200×630, navy with the major grid, `WEBSITE AUDIT` eyebrow and the logo mark, the domain at 88 px (64 px over 22 characters), a red `N CRITICAL` count when there is one, and three score tiles with bars. Default font for now.
 
 ---
 

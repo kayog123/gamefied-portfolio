@@ -11,6 +11,8 @@ export type RequestEmail = {
   previewSummary: PreviewSummary | null;
   /** Signed link to the review page; absent when the request couldn't be stored. */
   reviewUrl?: string;
+  /** Share ID of the shared audit they came from, if any. */
+  sharedFrom?: string;
 };
 
 /** Visitor-supplied text goes in headers, so strip anything that could break one. */
@@ -22,11 +24,12 @@ function oneLine(text: string): string {
  * Tells Jovanni a visitor asked for the full audit. `Reply-To` is the visitor, so "Reply" answers them.
  * Plain text only; the review link is the only thing in here that can trigger anything (and it needs a click + confirm).
  */
-export function sendAuditRequestEmail({ name, email, url, domain, message, previewSummary, reviewUrl }: RequestEmail): Promise<SendResult> {
+export function sendAuditRequestEmail({ name, email, url, domain, message, previewSummary, reviewUrl, sharedFrom }: RequestEmail): Promise<SendResult> {
   const lines = [
     `${oneLine(name)} <${email}> asked for the full audit of ${domain}.`,
     '',
     `Site: ${url}`,
+    sharedFrom ? `Came from the shared audit link /audit/s/${sharedFrom}` : '',
     previewSummary
       ? `Free scan: SEO ${previewSummary.scores.seo} · Security ${previewSummary.scores.security} · Maintainability ${previewSummary.scores.maintainability} ` +
         `(${previewSummary.counts.critical} critical, ${previewSummary.lockedCount} locked)`
@@ -38,4 +41,18 @@ export function sendAuditRequestEmail({ name, email, url, domain, message, previ
   ];
 
   return sendEmail({ replyTo: email, subject: `Audit request: ${oneLine(domain)} (${oneLine(name)})`, text: lines.join('\n') });
+}
+
+/** "Opened your audit": sent once, the first time a link you personalised (`preparedFor`) is opened by something that looks like a person. */
+export function sendSnapshotOpenedEmail({ domain, preparedFor, shareUrl }: { domain: string; preparedFor: string; shareUrl: string }): Promise<SendResult> {
+  return sendEmail({
+    subject: `Opened: audit of ${oneLine(domain)} (${oneLine(preparedFor)})`,
+    text: [
+      `${oneLine(preparedFor)} just opened the audit you shared for ${domain}.`,
+      '',
+      shareUrl,
+      '',
+      'This is a best-effort signal: link-preview bots are filtered out, but some email scanners can still look like a visit.',
+    ].join('\n'),
+  });
 }

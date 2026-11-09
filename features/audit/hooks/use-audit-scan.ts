@@ -5,7 +5,8 @@ export type AuditScanState =
   | { status: 'idle' }
   | { status: 'scanning'; url: string }
   | { status: 'error'; url: string; message: string }
-  | { status: 'done'; preview: AuditPreview };
+  /** `ticket` proves this scan passed the bot check; the speed test and "Share" need it. `null` if the server issued none. */
+  | { status: 'done'; preview: AuditPreview; ticket: string | null };
 
 /** PageSpeed runs after the main results are shown, so the page never waits on it. */
 export type PerformanceState =
@@ -93,7 +94,7 @@ export function useAuditScan(): UseAuditScanResult {
           return;
         }
         setProgress(100);
-        setState({ status: 'done', preview: body.preview });
+        setState({ status: 'done', preview: body.preview, ticket: body.ticket ?? null });
         if (body.ticket) void measurePerformance(body.preview.finalUrl, body.ticket, controller);
         else setPerformance({ status: 'unavailable' });
       } catch {

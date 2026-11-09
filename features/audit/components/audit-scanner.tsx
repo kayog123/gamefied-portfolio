@@ -100,7 +100,7 @@ export function AuditScanner() {
           <p role="status" className="sr-only">
             Audit of {hostOf(state.preview.finalUrl)} complete.
           </p>
-          <AuditResults preview={state.preview} performance={performance} />
+          <AuditResults preview={state.preview} performance={performance} ticket={state.ticket} />
         </>
       )}
     </div>

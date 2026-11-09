@@ -93,6 +93,16 @@ export function ReviewPanel({ request, token }: { request: AuditRequestRecord; t
               {request.url}
             </a>
           </dd>
+          {request.sharedFrom && (
+            <>
+              <dt className="text-muted">Came from</dt>
+              <dd>
+                <a href={`/audit/s/${request.sharedFrom}`} target="_blank" rel="noopener noreferrer" className="focus-blueprint text-glow-soft hover:text-glow-pale">
+                  shared audit {request.sharedFrom}
+                </a>
+              </dd>
+            </>
+          )}
           <dt className="text-muted">Message</dt>
           <dd className="whitespace-pre-wrap text-text-soft">{request.message || 'They left no message.'}</dd>
         </dl>

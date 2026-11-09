@@ -19,13 +19,15 @@ export type RequestDialogProps = {
   /** The audited page (after redirects). */
   url: string;
   domain: string;
+  /** The shared audit this request starts from, if any. */
+  shareId?: string;
 };
 
 /**
  * "Get the full audit" (Sheet 09 · 09d): a native <dialog>, so focus is trapped, Esc closes it and
  * focus returns to the button that opened it with no extra code. The sent state tells the visitor what happens next.
  */
-export function RequestDialog({ isOpen, onClose, url, domain }: RequestDialogProps) {
+export function RequestDialog({ isOpen, onClose, url, domain, shareId }: RequestDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -48,7 +50,7 @@ export function RequestDialog({ isOpen, onClose, url, domain }: RequestDialogPro
     event.preventDefault();
     if (!canSubmit) return;
 
-    const parsed = auditRequestSchema.safeParse({ url, name, email, message, consent, turnstileToken: token ?? undefined });
+    const parsed = auditRequestSchema.safeParse({ url, name, email, message, consent, turnstileToken: token ?? undefined, shareId });
     if (!parsed.success) {
       setSubmit({ status: 'error', message: parsed.error.issues[0]?.message ?? 'Please check the form.' });
       return;

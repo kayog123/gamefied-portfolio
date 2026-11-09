@@ -30,7 +30,8 @@ fullstack-portfolio/
 │  │  ├─ layout.tsx              # Site top bar + footer
 │  │  ├─ audit/
 │  │  │  ├─ page.tsx             # "/audit"  (09 Website audit: free scan + results)
-│  │  │  └─ review/[requestId]/page.tsx   # private, noindex, signed link (Jovanni only)
+│  │  │  ├─ review/[requestId]/page.tsx   # private, noindex, signed link (Jovanni only)
+│  │  │  └─ s/[shareId]/{page,opengraph-image}.tsx   # shared audit snapshot (noindex) + its link-preview image
 │  │  ├─ process/
 │  │  │  └─ page.tsx             # "/process"  (client process, discovery call → delivery, + FAQ)
 │  │  ├─ blog/
@@ -41,7 +42,7 @@ fullstack-portfolio/
 │  │     └─ [slug]/
 │  │        └─ page.tsx          # "/work/coda-compliance-tool"  (08 Case study)
 │  ├─ studio/[[...tool]]/        # Embedded Sanity Studio ("/studio"), reads ../sanity.config.ts
-│  ├─ studio/audits/[[...tool]]/ # Studio for the private audit-requests dataset ("/studio/audits"), reads ../sanity.audits.config.ts
+│  ├─ studio/audits/[[...tool]]/ # Studio for the private audits dataset: requests and shared audits ("/studio/audits"), reads ../sanity.audits.config.ts
 │  ├─ api/
 │  │  ├─ revalidate/route.ts     # Sanity webhook → revalidateTag("blog")
 │  │  ├─ audit/{preview,performance,request}/route.ts   # free scan · PageSpeed · "Get the full audit" (docs/AUDIT.md)

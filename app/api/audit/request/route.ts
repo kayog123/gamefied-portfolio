@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? 'Invalid request.' }, { status: 400 });
   }
-  const { url: rawUrl, name, email, message, turnstileToken } = parsed.data;
+  const { url: rawUrl, name, email, message, turnstileToken, shareId: sharedFrom } = parsed.data;
 
   const target = normalizeAuditUrl(rawUrl);
   if (!target) return NextResponse.json({ error: 'That doesn’t look like a website address.' }, { status: 400 });
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
   let isStored = false;
   if (isAuditStoreConfigured()) {
     try {
-      const id = await createAuditRequest({ url, domain, name, email, message, previewSummary });
+      const id = await createAuditRequest({ url, domain, name, email, message, previewSummary, sharedFrom });
       isStored = true;
       reviewUrl = createReviewUrl(id);
     } catch (error) {
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const sent = await sendAuditRequestEmail({ name, email, url, domain, message, previewSummary, reviewUrl });
+  const sent = await sendAuditRequestEmail({ name, email, url, domain, message, previewSummary, reviewUrl, sharedFrom });
   if (!sent.ok && !isStored) {
     console.error('[audit] request neither stored nor emailed', sent.reason);
     return NextResponse.json(

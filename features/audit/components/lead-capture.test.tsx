@@ -15,6 +15,7 @@ const record: AuditRequestRecord = {
   message: 'Not on Google',
   status: 'pending',
   previewSummary: { scores: { seo: 50, security: 45, maintainability: 91 }, counts: { critical: 1, warning: 7, info: 7 }, lockedCount: 3 },
+  sharedFrom: null,
 };
 
 describe('RequestDialog', () => {

@@ -5,7 +5,14 @@ import { useState } from 'react';
 import { Button } from '@/components/blueprint';
 import { RequestDialog } from './request-dialog';
 
-export type FullAuditPanelProps = { url: string; domain: string; lockedCount: number; hasCritical: boolean };
+export type FullAuditPanelProps = {
+  url: string;
+  domain: string;
+  lockedCount: number;
+  hasCritical: boolean;
+  /** Set on a shared audit page, so the request records which link it came from. */
+  shareId?: string;
+};
 
 const BENEFITS = [
   'The cause and exact fix for every locked finding',
@@ -15,7 +22,7 @@ const BENEFITS = [
 ];
 
 /** The upsell: what the full audit adds, and the button that opens the request form. */
-export function FullAuditPanel({ url, domain, lockedCount, hasCritical }: FullAuditPanelProps) {
+export function FullAuditPanel({ url, domain, lockedCount, hasCritical, shareId }: FullAuditPanelProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const heading =
     lockedCount === 0
@@ -48,7 +55,7 @@ export function FullAuditPanel({ url, domain, lockedCount, hasCritical }: FullAu
       <p className="font-sans text-xs leading-[1.5] text-muted">
         Free. I reply within [X business days]. Your email is used only for this audit. No newsletters.
       </p>
-      <RequestDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} url={url} domain={domain} />
+      <RequestDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} url={url} domain={domain} shareId={shareId} />
     </aside>
   );
 }

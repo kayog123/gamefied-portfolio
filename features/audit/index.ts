@@ -4,3 +4,4 @@ export { auditRequestSchema, type AuditRequestInput } from './audit.schemas';
 export { hasScheme, normalizeAuditUrl, toPreview } from './audit.utils';
 export { AuditPage } from './components/audit-page';
 export { AuditReviewPage, type AuditReviewPageProps } from './components/audit-review-page';
+export { SharedAuditPage, type SharedAuditPageProps } from './components/shared-audit-page';

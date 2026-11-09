@@ -11,6 +11,7 @@ export const auditRequestSchema = defineType({
     defineField({ name: 'name', type: 'string', readOnly: true }),
     defineField({ name: 'email', type: 'string', readOnly: true }),
     defineField({ name: 'message', type: 'text', rows: 4, readOnly: true }),
+    defineField({ name: 'sharedFrom', type: 'string', readOnly: true, description: 'Share ID of the shared audit link they came from, if any.' }),
     defineField({ name: 'consent', type: 'boolean', readOnly: true, description: 'They agreed to be emailed about this audit only.' }),
     defineField({
       name: 'status',

@@ -24,3 +24,9 @@ export const SCAN_TICKET_TTL_SECONDS = 15 * 60;
 
 /** Public Cloudflare Turnstile site key. Unset means no widget (fine in development; production fails closed on the server). */
 export const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
+// Shareable snapshots (Phase 3b, docs/AUDIT.md#links)
+export const SNAPSHOT_TTL_DAYS = 30;
+/** The same URL shared again within this window reuses the existing snapshot, so one visitor can't mint unlimited documents. */
+export const SNAPSHOT_REUSE_HOURS = 24;
+export const SHARE_ID_LENGTH = 10;

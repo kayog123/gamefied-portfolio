@@ -1,4 +1,4 @@
-import type { CategoryScores, SeverityCounts } from '@/types/audit';
+import type { AuditPreview, CategoryScores, SeverityCounts } from '@/types/audit';
 
 /** `pending` until Jovanni acts. `running`/`completed`/`failed` belong to the full audit (Phase 4). */
 export type AuditRequestStatus = 'pending' | 'running' | 'completed' | 'failed' | 'contacted' | 'declined';
@@ -21,4 +21,19 @@ export type AuditRequestRecord = {
   message: string;
   status: AuditRequestStatus;
   previewSummary: PreviewSummary | null;
+  /** Share ID of the shared audit they came from, if any. */
+  sharedFrom: string | null;
+};
+
+/** A shared audit as stored in the private `audits` dataset (`auditSnapshot`). Holds the public preview only, never full findings. */
+export type AuditSnapshotRecord = {
+  shareId: string;
+  url: string;
+  domain: string;
+  createdAt: string;
+  expiresAt: string;
+  /** Set by Jovanni in Studio. Shown as "Prepared for …" and turns on the first-open email. */
+  preparedFor: string | null;
+  views: number;
+  preview: AuditPreview;
 };

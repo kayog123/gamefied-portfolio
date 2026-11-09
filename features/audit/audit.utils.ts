@@ -115,3 +115,16 @@ export function performanceLevel(score: number): PerformanceLevel {
   if (score >= 50) return 'fair';
   return 'poor';
 }
+
+/** 10 URL-safe characters (see `generateShareId`). Checked before anything is looked up. */
+const SHARE_ID_PATTERN = /^[A-Za-z0-9_-]{10}$/;
+
+export function isValidShareId(value: string): boolean {
+  return SHARE_ID_PATTERN.test(value);
+}
+
+/** True once an ISO timestamp is in the past. An unparseable date counts as expired, so a corrupted snapshot never stays open. */
+export function isExpired(expiresAtIso: string, now: number = Date.now()): boolean {
+  const expiresAt = Date.parse(expiresAtIso);
+  return Number.isNaN(expiresAt) || expiresAt <= now;
+}
